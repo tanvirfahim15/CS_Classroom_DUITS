@@ -27,9 +27,9 @@ def articles():
 @app.route('/article/<string:id>/')
 def article(id):
     #articles = db.article.find({"_id": ObjectId(id)})
-    articles = read.blog_article_find(id, None)
+    article = read.blog_article_find(id, None)[0]
     print(articles)
-    return render_template('/tutorial/article.html', articles=articles,id=id)
+    return render_template('/tutorial/article.html', article=article,id=id)
 
 
 @app.route('/dashboard')

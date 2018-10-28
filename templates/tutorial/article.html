@@ -1,7 +1,25 @@
 {% extends '/tutorial/layout.html' %}
 
 {% block body %}
-  {% for article in articles %}
+    <script>
+        window.onload=function () {
+            tag();
+        }
+
+        function tag() {
+            var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("tag").innerText ="Tag : "+ this.responseText;
+                    }
+                };
+                xhttp.open("POST", "/blog/classify/", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send("id={{ id }}");
+        }
+
+
+    </script>
   <h1>{{article['title']}}</h1>
   <small>Written by {{article['author']}} on {{article['date']}}</small>
   <hr>
@@ -14,5 +32,5 @@
       <a href="/blog/qpredict/{{ id }}/">
       <h2> Generate Question</h2>
       </a></div>
-  {% endfor %}
+    <div id="tag" align="center"></div>
 {% endblock %}

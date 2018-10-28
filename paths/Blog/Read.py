@@ -2,6 +2,9 @@ from flask import render_template, request, session, Blueprint, redirect
 from Service.Blog import Read as service
 from classes.Blog.Qpredict import Qpredict
 from pattern.SearchArticle import SearchStrategy
+from bson import ObjectId
+from Database.database import db
+import paths.Blog.classify as classify
 
 app = Blueprint('blog_read', __name__)
 
@@ -33,4 +36,12 @@ def blog_search():
     else:
         data, articles = service.blog_search(False, None)
     return render_template('/blog/search.html', **locals())
+
+
+@app.route('/blog/classify/', methods=['GET', 'POST'])
+def blog_classify():
+    if request.method == 'POST':
+        id = request.form['id']
+        article = db.article.find_one({"_id": ObjectId(id)})['body']
+        return classify.classify(article)
 
