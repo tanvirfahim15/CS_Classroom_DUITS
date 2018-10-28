@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Logistic Regression Entry</title>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        };
+    </script>
+
+
+    {% include "nav.html" %}
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h2 align="center">Logistic Regression Entry</h2>
+
+
+
+
+
+
+        <form action = "/simulation/ml/logistic-regression/entry-data" method = "POST">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="iterations">Iterations:</label>
+                        <input type="text" class="form-control" id="iterations" name="iterations" width="30px" value="1500">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="steps">Steps:</label>
+                        <input type="text" class="form-control" id="steps" name="steps" width="30px" value="100">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="alpha">Alpha:</label>
+                        <input type="text" class="form-control" id="alpha" name="alpha" width="30px" value="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <textarea class="form-control" rows="20" id="entry" name="entry"  placeholder="x1,x2,label"></textarea>
+            </div>
+            <div class="form-group" align="left">
+                <input type="submit" class="btn btn-dark btn-lg" value="Submit">
+            </div>
+        </form>
+
+
+
+
+
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

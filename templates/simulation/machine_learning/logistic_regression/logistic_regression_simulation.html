@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Logistic Regression Simulation</title>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        var iter=0;
+        var max_iter={{max_iter|tojson}};
+        window.onload=function () {
+            login();
+            loadSavedState();
+            //document.getElementById("footer").className += " fixed-bottom";
+            drawDataGraph(0);
+            drawCostGraph(0);
+        };
+        window.onkeydown = function (event) {
+            processKey(event);
+        };
+
+        function sigmoid(x) {
+            return (1/(1+Math.exp(-x))).toFixed(3)
+        }
+
+        function getPrediction(iteration) {
+            var data={{data|tojson}};
+
+            var prediction=[];
+            for(var i=0;i<data['x1'].length;i++){
+                document.getElementById('h'+i.toString()).innerText=sigmoid(data['data'][iteration*5+1]+data['data'][iteration*5+2]*data['x1'][i]+data['data'][iteration*5+3]*data['x2'][i]);
+                if(data['data'][iteration*5+3]==0)
+                    prediction.push(0);
+                else
+                    prediction.push(-(data['data'][iteration*5+1]+data['data'][iteration*5+2]*data['x1'][i])/data['data'][iteration*5+3]);
+            }
+            console.log(data);
+            return prediction;
+        }
+
+        function getColor() {
+            var colors = ['blue', 'green']
+            var data={{data|tojson}};
+            var color = []
+            for (var i=0; i<data['y'].length; i++){
+                color.push(colors[data['y'][i]])
+            }
+            return color;
+        }
+
+        function drawDataGraph(iteration) {
+            var data={{data|tojson}};
+            document.getElementById('t0').innerText=" "+data['data'][iteration*5+1].toFixed(3);
+            document.getElementById('t1').innerText=" "+data['data'][iteration*5+2].toFixed(3);
+            document.getElementById('t2').innerText=" "+data['data'][iteration*5+3].toFixed(3);
+            var trace1 = {
+                x: data['x1'],
+                y: data['x2'],
+                mode: 'markers',
+                marker: {
+                    color: getColor()
+                },
+                name: 'Data'
+            };
+
+            var trace2 = {
+                x: data['x1'],
+                y: getPrediction(iteration),
+                mode: 'lines',
+                title: 'Prediction Line',
+                name: 'Prediction Line'
+            };
+
+
+
+            var data = [ trace1, trace2 ];
+
+            var layout = {
+                title:'Data points and prediction line',
+                legend: {
+                    x: 0,
+                    y: 1,
+                    font: {
+                        family: "sans-serif",
+                        size: 12,
+                        color: "#000"
+                    }
+                },
+                height:500
+            };
+
+            Plotly.newPlot('dataChart', data, layout,{ displaylogo : false });
+        }
+        function getIterations() {
+            var data={{data|tojson}};
+            var iteration=[];
+            for(var i=0; i<max_iter; i+=1){
+                iteration.push(data['data'][i*5]);
+            }
+            return iteration;
+        }
+        function getCosts() {
+            var data={{data|tojson}};
+            var cost=[];
+            for(var i=0; i<max_iter; i+=1){
+                cost.push(data['data'][i*5+4]);
+            }
+            return cost;
+        }
+        function drawCostGraph(iteration) {
+            var data={{data|tojson}};
+
+            var trace1 = {
+                x: getIterations(),
+                y: getCosts(),
+                mode: 'lines',
+                name: 'Iterations vs Cost'
+            };
+
+            var trace2 = {
+                x: [data['data'][iteration*5]],
+                y: [data['data'][iteration*5+4]],
+                mode: 'markers',
+                name: 'Current cost'
+
+            };
+
+
+
+            var data = [ trace1, trace2 ];
+
+            var layout = {
+                title: 'Cost chart',
+                height:500
+
+            };
+
+            Plotly.newPlot('costChart', data, layout,{ displaylogo : false });
+        }
+        function processKey(event) {
+
+            var key = event.keyCode;
+            if(key==39||key==32) {
+                runForward();
+            }
+            else if(key==37) {
+                runBackward();
+            }
+        }
+        function runForward() {
+            if(iter==max_iter-1)
+                return;
+            iter++;
+            highlight('#repeat');
+            highlight_opacity('#t0');
+            highlight_opacity('#t1');
+            highlight_opacity('#t2');
+            drawDataGraph(iter);
+            drawCostGraph(iter);
+        }
+        function runBackward() {
+            if(iter==0)
+                return;
+            iter--;
+            drawDataGraph(iter);
+            drawCostGraph(iter);
+        }
+
+
+        function save() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=ml&algo=lgr&algo_id={{name}}&username="+data_login['username']);
+        }
+
+
+        function remove() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=ml&algo=lgr&algo_id={{name}}&username="+data_login['username']);
+        }
+
+        function loadSavedState() {
+            var saved = {{saved}}
+                console.log(saved);
+            if (saved == 1){
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+        function highlight(id){
+            $(id).animate({
+                backgroundColor: "#ae7138"
+            }, 500 ,"linear",function(){
+                $(this).animate({backgroundColor: "#2d2d2d"},500);
+            });
+        }
+        function highlight_opacity(id){
+            $(id).animate({
+                opacity: 0.3
+            }, 500 ,"linear",function(){
+                $(this).animate({opacity: 1},500);
+            });
+        }
+    </script>
+
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML">
+    </script>
+    {% include "nav.html" %}
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h2 align="center">Logistic Regression Simulation</h2>
+        <div align="center">  <button type="button" class="btn btn-dark" onclick="runBackward()" style="width: 150px">Run Backward</button>
+            <button type="button" class="btn btn-dark" onclick="runForward()" style="width: 150px">Run Forward</button>
+            <a href="/simulation/ml/logistic-regression/entry">
+            <button type="button" class="btn btn-dark">Create Simulation</button>
+        </a>
+            <button type="button" class="btn btn-success" id="save" onclick="save()" style="width: 150px">Save</button>
+
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div id="dataChart"></div>
+                    <table class="table table-dark">
+                        <thead>
+                <tr>
+                    <th >Theta<sub>0</sub></th>
+                    <th >Theta<sub>1</sub></th>
+                    <th >Theta<sub>2</sub></th>
+                    <th >Alpha</th>
+                </tr>
+                </thead>
+                        <tr>
+                        <td><span id="t0"></span></td>
+                        <td><span id="t1"></span></td>
+                        <td><span id="t2"></span></td>
+                        <td>{{ data.alpha }}</td>
+                    </tr></table>
+                    <table class="table table-dark" >
+                <thead>
+                <tr align="center">
+                    <th >i</th>
+                    <th >X<sub>0</sub></th>
+                    <th >X<sub>1</sub></th>
+                    <th >X<sub>2</sub></th>
+                    <th >Y</th>
+                    <th >h( X<sup>i</sup>, Theta )</th>
+                </tr>
+                </thead>
+                  {% for item in data.x1 %}
+                    <tr align="center"><td> {{ loop.index }}</td><td> 1</td><td> {{ item }}</td><td>{{ data.x2[loop.index-1] }}</td>
+                        <td>{{ data.y[loop.index-1]  | int}}</td><td id="h{{ loop.index-1 }}"></td></tr>
+                    {% endfor %}
+                </tbody>
+</table>
+                </div>
+                <div class="col-sm-6">
+                    <div id="costChart"></div>
+                    <div style="background: #2d2d2d">
+                    <span style="color: #dd711d;font-size:large;font-weight: bold">Algorithm
+                        </span></div>
+                    <pre><code class="language-python">alpha = learning rate
+m= number of training samples</code></pre>
+
+                    <pre><code class="language-python">def sigmoid(x):
+ return 1/(1+e^-x)</code></pre>
+
+                    <pre><code class="language-python">def h(X,theta):
+ return sigmoid( Matrix_Multiply(X,theta) )</code></pre>
+
+                    <pre><code class="language-python">def Cost(theta):
+ return (-Matrix_Multiply(Matrix_Transpose(y), log(h(theta)))
+    - Matrix_Multiply(Matrix_Transpose(1-y), log(1-h(theta))))/m</code></pre>
+
+                    <div style="background-color: #2d2d2d;color: #cccccc" align="left">
+                    Repeat until convergence {
+                    <div id="repeat" >
+                        <br/>&nbsp;&nbsp;&nbsp;&nbsp;Theta<sup>temp</sup> = Theta
+                        <br/>&nbsp;&nbsp;&nbsp;&nbsp;For theta<sub>j</sub> in Theta:
+                        &nbsp;&nbsp;$$theta_j = theta_j - {alpha \over m}{\sum_{i=1}^{m}} ( h(x^i,Theta^{temp}) - y^i ).x^i_j$$
+<br/>
+                    </div>
+
+                        }</div>
+                </div>
+            </div>
+        </div>
+
+        <br/>
+    </div>
+</div>
+
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+</body>
+
+<footer> {% include "footer.html" %}</footer>
+
+</html>
+

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>CS Classroom | Home</title>
+
+
+    <script>
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        }
+
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <br/>
+        <br/>
+        <h1 style="color: #ff6c13;background-color: #303030">CS Classroom</h1>
+        <br/>
+        <br/>
+        <h5 align="justify">
+        Our aim is to build a platform that will help in field of computer science education. The project will be comprised of various educational toolkits such as educational blog, course management web service. Our main concern is computer science education. So there will be modules specific to this field like dataset collector, online judge, code generator.
+            <br/><br/><p> Tutorial: This module will allow people to share their articles, tutorial series. Students will be able to access the articles on the web. We plan for making an extension which will automatically generate questions based on a article. It will help students to judge their understandings of the article. Other extensions like recommendation system, search, automatic hashtag generation will also be there.</p>
+            <p>Course Manager: This module will help teachers to manage their courses and communicate with students easily.</p>
+            <p> Dataset Collector: Collecting data is an important in computer science especially in the field of Human Computer Interaction. The aim is to make this process more suitable.</p>
+            <p>Algorithm Visualization: Learning Algorithms from pseudocode is hard. Simulating is always more helpful in classrooms. We will build simulation tools for that.</p>
+            <p>Code Helper: This module will automatically generate codes for various machine learning libraries. Besides, there will be a judge for checking implementations of popular algorithms.</p>
+
+
+        </h5>
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

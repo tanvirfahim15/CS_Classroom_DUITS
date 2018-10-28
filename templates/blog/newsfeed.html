@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Newsfeed</title>
+
+
+    <script>
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        }
+
+
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h1>News Feed</h1>
+
+                {% for item in articles %}
+                    <div align="left">
+                        <h4>
+                            <a href="/article/{{item['_id']}}">{{item['title']}}</a>
+                        </h4>
+                        {{item['date']}}<br/>
+                        by <a href="/blog/profile/{{item['author']}}">{{item['author']}}</a><br/>
+                        {{item['body']  | safe}}
+                    </div>
+                    <br/>
+                    <hr/>
+
+                {% endfor %}
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

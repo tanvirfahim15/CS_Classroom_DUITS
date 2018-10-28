@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Details</title>
+</head>
+<body>
+
+
+
+
+
+<div align="center"><strong><font color="#000080" size="5" face="华文楷体">Students enrolled in this course<br><br><br></font></strong></div>
+    <table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">
+
+       <tr><td height="25">Student ID</td>
+                <td height="25">Student name</td>
+            </tr>
+
+          {% for cno, cname in student_data%}
+
+
+            <tr><td height="25">{{ cno }}</td>
+                <td height="25">{{ cname}}</td>
+            </tr>
+
+         {% endfor %}
+
+        </table>
+
+
+
+</body>
+</html>

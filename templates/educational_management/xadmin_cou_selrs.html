@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  	<meta charset=utf-8>
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    </head>
+  
+  <body bgcolor="#8dd8f8">
+     <div align="center"><font size="5" color="#000080" face="华文楷体"><b>Course information is as follows：<br><br></b></font></div>
+     <table class="table1" border="1" cellspacing="0" cellpadding="0" align="center">
+     
+     <tr align="center"><th width="150">Course number</th><th width="200">Course Title</th><th width="150">Course credits</th><th width="50">modify</th><th width="50">delete</th></tr>
+     	{% if not data : %}
+     		<tr><th colspan="3">No such course information！</th></tr>
+     	{% else :%}
+     		{% for cou in data : %}
+            	<tr align="center">
+		    		<td>{{ cou['cno'] }}</td>
+		    		<td>{{ cou['cname'] }}</td>
+		       		<td>{{ cou['ccredit'] }}</td>
+              <td><a href="{{ url_for('admin_cou_upd',cno=cou['cno']) }}" >modify</a></td>
+              <td><A href="{{ url_for('admin_cou_del',cno=cou['cno']) }}">delete</A></td>
+				</tr>
+			{% endfor %}
+		{% endif %}
+	
+	</table>
+ 
+	</body>
+</html>
+	

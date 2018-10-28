@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title></title>
+<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+
+  </head>
+  
+  <body bgcolor="#8dd8f8">
+  <div align="center"><font size="5" color="#000080" face="华文楷体"><b>课程信息如下：<br><br></b></font></div>
+     <table class="table1" border="1" cellspacing="0" cellpadding="0" align="center">
+     
+     <tr align="center"><td width="90">Course number</td><td>course name</td><td width="80">Course credits</td><td width="100">class locations</td><td>class time</td><td width="70">Course capacity</td><td width="70">Selected number</td><td width="80">The teacher</td><td width="80">Elective course</td></tr>
+     {% if data : %}
+     	{% for cou in data: %}
+            	<tr align="center">
+		    		<td>{{ cou['cno'] }}</td>
+		    		<td>{{ cou['cname'] }}</td>
+		       		<td>{{ cou['ccredit'] }}</td>
+					<td>{{ cou['clocation'] }}</td>
+					<td>week{{ cou['ctime'][0]}}First{{cou['ctime'][1]}}Festival</td>
+		    		<td>{{ cou['cmaxcount'] }}</td>
+		       		<td>{{ cou['cselected'] }}</td>
+					<td>{{ cou['tname'] }}</td>
+                    <td><a href="{{ url_for('student_cho_sub_cno',cno=cou['cno']) }}">Elective course</a></td>
+				</tr>
+		{% endfor %}
+
+	{% else : %}
+	<tr><th colspan="10">No course information！</th></tr>
+	{% endif %}	
+
+	</table>
+  </body>
+</html>

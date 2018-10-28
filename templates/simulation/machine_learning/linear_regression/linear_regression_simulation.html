@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Linear Regression Simulation</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <script type="text/javascript">
+        var data = {{data|tojson}};
+        var iteration = 0;
+        var max_iteration = 0;
+
+        window.onload = function () {
+            login();
+            loadSavedState();
+            drawChart(data, iteration);
+            max_iteration = data['thetas'].length;
+            contour(data, iteration);
+            loadTable(data, iteration);
+            loadInfo(data, iteration);
+            loadCost(data, iteration);
+            console.log(data);
+        };
+
+        window.onkeydown = function (event) {
+            processKey(event);
+        };
+
+        function loadCost(data, iteration) {
+            var X = [];
+            for (var i = 0; i < data['iterations']; i++) {
+                X.push(i);
+            }
+
+            var trace1 = {
+                x: X,
+                y: data['costs'],
+                mode: 'lines',
+                marker: {
+                    color: 0
+                },
+                name: ''
+            };
+
+            var trace2 = {
+                x: [iteration * data['steps']],
+                y: [data['costs'][iteration * data['steps']]],
+                size: 25,
+                mode: 'marker',
+                marker: {
+                    color: 1,
+                    size: 20
+                },
+                name: ''
+            };
+
+
+            var graphs = [trace1, trace2];
+
+            var layout = {
+                title: 'Iterations vs Costs',
+                titlefont: {
+                    size: 18,
+                },
+                height: 500,
+                xaxis: {
+                    title: 'Iterations',
+                    titlefont: {
+                        family: 'Courier New, monospace',
+                        size: 15,
+                        color: '#7f7f7f'
+                    }
+                },
+                yaxis: {
+                    title: 'Costs',
+                    titlefont: {
+                        family: 'Courier New, monospace',
+                        size: 15,
+                        color: '#7f7f7f'
+                    }
+                }
+            };
+
+            Plotly.newPlot('cost_chart', graphs, layout, {displaylogo: false});
+
+        }
+
+
+        function loadInfo(data, iteration) {
+            document.getElementById("alpha").innerHTML = data['alpha'];
+            document.getElementById("theta0").innerHTML = parseFloat(data['thetas'][iteration][0]).toFixed(3);
+            document.getElementById("theta1").innerHTML = parseFloat(data['thetas'][iteration][1]).toFixed(3);
+            document.getElementById("total_cost").innerHTML = parseFloat(data['costs'][iteration * data['steps']]).toFixed(3);
+
+        }
+
+        function loadTable(data, iteration) {
+            if (data != null) {
+                document.getElementById("table_content").innerHTML = "";
+                for (var i = 0; i < Math.min(data['x'].length, 10); i++) {
+                    var prediction = data['thetas'][iteration][0] + data['thetas'][iteration][1] * data['x'][i];
+                    var cost = (data['y'][i] - prediction) * (data['y'][i] - prediction);
+                    var str = "<tr><td>" + Math.floor(i + 1) + "</td><td>" + parseFloat(data['x'][i]).toFixed(3) + "</td><td>" +
+                        parseFloat(data['y'][i]).toFixed(3) + "</td><td class=\'prediction\'>" + parseFloat(prediction).toFixed(3) +
+                        "</td><td class=\'cost_i\'>" + parseFloat(cost).toFixed(3) + "</td></tr>";
+                    document.getElementById("table_content").innerHTML += str;
+                }
+                var str = "<tr><td>.....</td><td>.....</td><td>.....</td><td>.....</td><td>.....</td></tr>";
+                document.getElementById("table_content").innerHTML += str;
+            }
+        }
+
+        function loadPrediction(data, iteration) {
+            if (data != null) {
+                document.getElementById("table_content").innerHTML = "";
+                for (var i = 0; i < Math.min(data['x'].length, 10); i++) {
+                    var prediction = data['thetas'][iteration - 1][0] + data['thetas'][iteration - 1][1] * data['x'][i];
+                    var cost = (data['y'][i] - prediction) * (data['y'][i] - prediction);
+                    var prediction = data['thetas'][iteration][0] + data['thetas'][iteration][1] * data['x'][i];
+                    var str = "<tr><td>" + Math.floor(i + 1) + "</td><td>" + parseFloat(data['x'][i]).toFixed(3) + "</td><td>" +
+                        parseFloat(data['y'][i]).toFixed(3) + "</td><td class=\'prediction\'>" + parseFloat(prediction).toFixed(3) +
+                        "</td><td class=\'cost_i\'>" + parseFloat(cost).toFixed(3) + "</td></tr>";
+                    document.getElementById("table_content").innerHTML += str;
+                }
+                var str = "<tr><td>.....</td><td>.....</td><td>.....</td><td>.....</td><td>.....</td></tr>";
+                document.getElementById("table_content").innerHTML += str;
+            }
+        }
+
+        function loadCosts(data, iteration) {
+            if (data != null) {
+                document.getElementById("table_content").innerHTML = "";
+                for (var i = 0; i < Math.min(data['x'].length, 10); i++) {
+                    var prediction = data['thetas'][iteration][0] + data['thetas'][iteration][1] * data['x'][i];
+                    var cost = (data['y'][i] - prediction) * (data['y'][i] - prediction);
+                    var str = "<tr><td>" + Math.floor(i + 1) + "</td><td>" + parseFloat(data['x'][i]).toFixed(3) + "</td><td>" +
+                        parseFloat(data['y'][i]).toFixed(3) + "</td><td class=\'prediction\'>" + parseFloat(prediction).toFixed(3) +
+                        "</td><td class=\'cost_i\'>" + parseFloat(cost).toFixed(3) + "</td></tr>";
+                    document.getElementById("table_content").innerHTML += str;
+                }
+                var str = "<tr><td>.....</td><td>.....</td><td>.....</td><td>.....</td><td>.....</td></tr>";
+                document.getElementById("table_content").innerHTML += str;
+            }
+        }
+
+        function contour(data, iteration) {
+            var X = [];
+            var Y = [];
+            var Z = [];
+            for (var i = 0; i < data['thetas'].length; i++) {
+                X.push(data['thetas'][i][0])
+                Y.push(data['thetas'][i][1])
+                Z.push(data['costs'][i * data['steps']])
+            }
+            var data = [{
+                z: Z,
+                x: X,
+                y: Y,
+                type: 'contour',
+                name: ''
+            },
+                {
+                    x: X,
+                    y: Y,
+                    mode: 'lines',
+                    name: 'Costs'
+
+                },
+                {
+                    x: [data['thetas'][iteration][0]],
+                    y: [data['thetas'][iteration][1]],
+                    mode: 'markers',
+                    marker: {
+                        color: 3,
+                        size: 20
+                    },
+                    name: ''
+
+                }
+            ];
+            var layout = {
+                title: 'Thetas vs Cost Contour Plot',
+                titlefont: {
+                    size: 18,
+                },
+                height: 500,
+                xaxis: {
+                    title: 'Theta0',
+                    titlefont: {
+                        family: 'Courier New, monospace',
+                        size: 15,
+                        color: '#7f7f7f'
+                    }
+                },
+                yaxis: {
+                    title: 'Theta1',
+                    titlefont: {
+                        family: 'Courier New, monospace',
+                        size: 15,
+                        color: '#7f7f7f'
+                    }
+                }
+            };
+
+
+            Plotly.newPlot('contour', data, layout, {displaylogo: false});
+        }
+
+
+        function drawChart(data, iteration) {
+            var trace1 = {
+                x: data['x'],
+                y: data['y'],
+                mode: 'markers',
+                marker: {
+                    color: 0
+                },
+                name: 'Data'
+            };
+
+            var trace2 = {
+                x: data['x'],
+                y: getPrediction(data, iteration),
+                mode: 'lines',
+                title: 'Prediction Line',
+                name: 'Prediction Line'
+            };
+
+
+            var graphs = [trace1, trace2];
+
+            var layout = {
+                title: 'Data point and prediction line',
+                titlefont: {
+                    size: 18,
+                },
+
+                height: 500,
+                legend: {
+                    x: 0,
+                    y: 1,
+                    font: {
+                        family: "sans-serif",
+                        size: 12,
+                        color: "#000"
+                    }
+                }
+            };
+
+            Plotly.newPlot('chart', graphs, layout, {displaylogo: false});
+
+        }
+
+        function getPrediction(data, iteration) {
+            var ret = [];
+            var X = data['x'];
+            var theta0 = data['thetas'][iteration][0];
+            var theta1 = data['thetas'][iteration][1];
+            for (var i = 0; i < X.length; i++) {
+                ret.push(theta0 + theta1 * X[i]);
+            }
+            return ret;
+        }
+
+        function processKey(event) {
+
+            var key = event.keyCode;
+            if (key == 39 || key == 32) {
+
+                runForward();
+            }
+            else if (key == 37) {
+                runBackward();
+            }
+        }
+
+        function gradient_decent() {
+            drawChart(data, iteration);
+
+        }
+
+        function prediction_update(data, iteration) {
+            loadPrediction(data, iteration)
+
+        }
+
+        function cost_i_update() {
+            loadCosts(data, iteration);
+
+        }
+
+        function total_cost_update() {
+
+            contour(data, iteration);
+            loadCost(data, iteration);
+            document.getElementById("total_cost").innerHTML = '&nbsp;&nbsp;&nbsp; <b>Total Cost: </b>' + parseFloat(data['costs'][iteration * data['steps']]).toFixed(3);
+
+        }
+
+        function runForward() {
+            if (iteration == max_iteration - 1)
+                return;
+            iteration++;
+            gradient_decent();
+            prediction_update(data, iteration);
+            cost_i_update();
+            total_cost_update();
+            loadTable(data, iteration);
+            loadInfo(data, iteration);
+        }
+
+        function runBackward() {
+
+            if (iteration == 1)
+                return;
+            iteration--;
+            gradient_decent();
+            prediction_update(data, iteration);
+            cost_i_update();
+            total_cost_update();
+            loadTable(data, iteration);
+            loadInfo(data, iteration);
+        }
+
+
+        function save() {
+            if (data_login['username'] == null) {
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=ml&algo=lr&algo_id={{name}}&username=" + data_login['username']);
+        }
+
+
+        function remove() {
+            if (data_login['username'] == null) {
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=ml&algo=lr&algo_id={{name}}&username=" + data_login['username']);
+        }
+
+        function loadSavedState() {
+            var saved = {{saved}}
+                console.log(saved);
+            if (saved == 1) {
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+    </script>
+
+
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML">
+    </script>
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+
+
+<h2 align="center">Linear Regression Simulation</h2>
+<div align="center">
+    <div style="width: 80%">
+
+        <button type="button" class="btn btn-dark" onclick="location.reload()" style="width: 150px;font-size: large">
+            Replay
+        </button>
+        <button type="button" class="btn btn-dark" onclick="runForward()" style="width: 150px;font-size: large">Run
+            Forward
+        </button>
+        <a href="/simulation/ml/linear-regression/entry">
+            <button type="button" class="btn btn-dark" style="font-size: large">Create Simulation</button>
+        </a>
+        <button type="button" class="btn btn-success" id="save" onclick="save()" style="width: 150px;font-size: large">
+            Save
+        </button>
+        <br/>
+        <br/>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6" align="center">
+
+                    <div id="chart"></div>
+                    <hr/>
+                    <div id="cost_chart"></div>
+                    <hr/>
+                    <div id="contour"></div>
+                </div>
+
+                <div class="col-sm-6" align="center">
+                    <table class="table table-dark" id="table" style="font-size: larger">
+                        <thead>
+                        <tr>
+                            <th>Alpha</th>
+                            <th>Theta<sub>0</sub></th>
+                            <th>Theta<sub>1</sub></th>
+                            <th>Total cost</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><span id="alpha"></span></td>
+                            <td><span id="theta0"></span></td>
+                            <td><span id="theta1"></span></td>
+                            <td><span id="total_cost"></span></td>
+                        </tr>
+                        </tbody>
+                    </table><br/>
+<hr/>
+<br/>
+                    <table class="table table-dark" id="table" style="font-size: larger">
+                        <thead>
+                        <tr>
+                            <th><a href="#" class="black-background">i</a></th>
+                            <th><a href="#" class="black-background">x<sup>i</sup></a></th>
+                            <th><a href="#" class="black-background">y<sup>i</sup></a></th>
+                            <th><a href="#equations" onclick="prediction()" class="black-background">h(x)</a>
+                            </th>
+                            <th><a href="#equations" onclick="cost()" class="black-background">Cost(i)</a></th>
+                        </tr>
+                        </thead>
+                        <tbody id="table_content">
+
+                        </tbody>
+                    </table>
+<br/>
+<hr/>
+<br/>
+
+                    <div style="background: #2d2d2d">
+                    <span style="color: #dd711d;font-size:larger;font-weight: bold">Algorithm
+                        </span></div>
+                    <pre><code class="language-python">alpha = learning rate
+m= number of training samples</code></pre>
+
+
+                    <pre><code class="language-python">def h(x, Theta):
+    return Theta[0] + Theta[1] * x</code></pre>
+
+                    <pre><code class="language-python">def Cost(i, Theta):
+    return (h(x[i], Theta)-y[i])^2</code></pre>
+                    <pre><code class="language-python">def TotalCost(Theta):
+    cost = 0.0
+    for i = 1 to m:
+        cost += Cost(i, Theta)
+    return cost</code></pre>
+
+                    <div style="background-color: #2d2d2d;color: #cccccc" align="left">
+                        Repeat until convergence {
+                        <div id="repeat" align="left">
+                            <br/>&nbsp;&nbsp;&nbsp;&nbsp;Theta<sup>temp</sup> = Theta
+                            <br/>
+                            &nbsp;&nbsp;$$theta_0 = theta_0 - {alpha \over m}{\sum_{i=1}^{m}} ( h(x^i,Theta^{temp}) -
+                            y^i )$$
+                            <br/>
+                            &nbsp;&nbsp;$$theta_1 = theta_1 - {alpha \over m}{\sum_{i=1}^{m}} ( h(x^i,Theta^{temp}) -
+                            y^i ).x^i$$
+                            <br/>
+                        </div>
+
+                        }
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <hr/>
+
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

@@ -1,0 +1,41 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    
+    <meta charset=utf-8>
+    <title></title>
+    </head>
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+  <body bgcolor="#8dd8f8">
+
+     <div align="center"><font size="5" color="#000080" face="华文楷体"><b>Student information is as follows：<br><br></b></font></div>
+     <table class="table1" border="1" cellspacing="0" cellpadding="0" align="center">
+     
+     <tr align="center"><th width="50">student ID</th><th width="60">Name</th><th>gender</th><th>age</th><th width="140">profession</th><th width="110">phone</th><th>Total credits</th><th>The average score</th><th>专业排名</th><th width="50">password</th><th>Course selection information</th><th width="50">modify</th><th width="50">delete</th></tr>
+     	{% if not data : %}
+			<tr><th colspan="11">No eligible student information！</th></tr>
+		{% else %}
+     		{% for student in data : %}
+            	<tr align="center">
+		    		<td>{{ student['sno'] }}</td>
+		    		<td>{{ student['sname'] }}</td>
+					<td>{{ student['ssex'] }}</td>
+					<td>{{ student['sage'] }}</td>
+		 	    	<td>{{ student['sphone']}}</td>
+		       		<td>{{ student['sdept'] }}</td>
+					<td>{{ student['sum_credit'] }}</td>
+					<td>{{ student['avg_grade'] }}</td>
+					<td>{{ student['rank'] }}</td>
+					<td>{{ student['spassword']}}</td>
+					<td><a href="{{ url_for('student_sel_other_cours',sno=student['sno']) }}">View</a></td>
+					<td><a href="{{ url_for('admin_stu_upd',sno=student['sno']) }}">modify</a></td>
+					<td><a href="{{ url_for('admin_stu_del',sno=student['sno']) }}">delete</a></td>
+				</tr>
+				{% endfor %}
+		{% endif %}
+	</table>
+	
+	</body>
+</html>
+	

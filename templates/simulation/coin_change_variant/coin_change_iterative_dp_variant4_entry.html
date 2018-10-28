@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Coin Change Variant-4 Simulation Entry</title>
+
+
+    <script>
+
+        window.onload = function() {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        };
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h2 align="center">Coin Change Variant-4 Entry</h2>
+
+        <br/>
+        <br/>
+        <div align="left" style="width: 25%">
+            <form action = "/idp/coin-change-variant-4/entry_data" method = "POST">
+                <div class="form-group">
+                    <label for="coin_array_variant4"><b>Coin Array:</b></label>
+                    <input type="text" class="form-control" name="coin_array_variant4" id="coin_array_variant4" maxlength="22" size="22">
+                    <label><b>Example: [9 , 2 , 5 , 3 , 7 , 11]</b></label>
+                </div>
+                <div class="form-group">
+                    <label for="payment_variant4"><b>Payment:</b></label>
+                    <input type="text" class="form-control" name="payment_variant4" id="payment_variant4" maxlength="22" size="22">
+                    <label><b>Example: 22</b></label>
+                </div>
+                <div class="form-group" align="left">
+                    <input type="submit" class="btn btn-dark btn-lg" value="Submit">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

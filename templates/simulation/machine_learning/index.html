@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Machine Learning Simulation</title>
+
+
+    <script>
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        }
+
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <br/>
+        <br/>
+        <a href="/simulation/ml/linear-regression/">Linear Regression</a>
+        <br/>
+        <a href="/simulation/ml/logistic-regression/">Logistic Regression</a>
+        <br/>
+        <a href="/simulation/ml/k-means-clustering/">K Means Clustering</a>
+        <br/>
+
+        <br/>
+        <br/>
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

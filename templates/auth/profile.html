@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>{{session['username']}} || Profile</title>
+
+
+    <script>
+
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+            loadSavedSimulations();
+        }
+        var saved= {{data|tojson}};
+
+        function loadSavedSimulations() {
+            for (var i = 0; i<saved.length;i++){
+                var current = saved[i];
+                if(current['type']=='ml'){
+                    var doc = document.getElementById('ml');
+                    if (current['algo']=='lr'){
+                        doc.innerHTML+= "Linear Regression: <a href='/simulation/ml/linear-regression/"
+                            +current['algo_id'] + "'>" + current['algo_id'] + "</a><br/>";
+                    }
+                    if (current['algo']=='lgr'){
+                        doc.innerHTML+= "Logistic Regression: <a href='/simulation/ml/logistic-regression/"
+                            +current['algo_id'] + "'>" + current['algo_id'] + "</a><br/>";
+                    }
+                    if (current['algo']=='km'){
+                        doc.innerHTML+= "K-Means Clustering: <a href='/simulation/ml/k-means-clustering/"
+                            +current['algo_id'] + "'>" + current['algo_id'] + "</a><br/>";
+                    }
+                }
+                if(current['type']=='la'){
+                    var doc = document.getElementById('la');
+                    if (current['algo']=='gs'){
+                        doc.innerHTML+= "Gauss Elimination: <a href='/simulation/la/gauss-elimination/"
+                            +current['algo_id'] + "'>" + current['algo_id'] + "</a><br/>";
+                    }
+                    if (current['algo']=='gj'){
+                        doc.innerHTML+= "Gauss Jordan Elimination: <a href='/simulation/la/gauss-jordan-elimination/"
+                            +current['algo_id'] + "'>" + current['algo_id'] + "</a><br/>";
+                    }
+                    if (current['algo']=='ev'){
+                        doc.innerHTML+= "Eigen Value Computaion: <a href='/simulation/la/eigen-value/"
+                            +current['algo_id'] + "'>" + current['algo_id'] + "</a><br/>";
+                    }
+                }
+                if(current['type']=='idp'){
+                    var doc = document.getElementById('idp');
+                    if (current['algo']=='lcs'){
+                        doc.innerHTML+= "Longest Common Subsequence: <a href='/simulation/idp/longest-common-subsequence/"
+                            +current['algo_id'] + "'>" + current['algo_id'] + "</a><br/>";
+                    }
+                }
+            }
+
+        }
+    </script>
+
+
+    {% include "nav.html" %}
+
+    <style>
+        .card-header{
+            background-color: #53565c;
+        }
+        .card-link{
+            color: white;
+        }
+        a.card-link:hover, a.card-link:active{
+            color: #3bdd79;
+        }
+    </style>
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h1>{{session['username']}}</h1>
+        {{user_data['institute']}} {{user_data['country']}}
+        <br/>
+        <a href="/auth/change-info">Change Profile Information</a>
+        <br/><br/>
+
+        <div class="card-header">
+                    <a class="card-link" href="/blog/profile/{{ session['username'] }}">
+                        My Blog
+                    </a>
+        </div>
+        <br/>
+        <div class="card-header">
+                    <a class="card-link" href="/dashboard">
+                        Dashboard
+                    </a>
+        </div>
+        <br/>
+        <div class="card-header">
+                    <a class="card-link" href="/blog/search/">
+                        Search
+                    </a>
+        </div>
+        <br/>
+
+        <div class="card-header">
+                    <a class="card-link" href="/blog/newsfeed/">
+                        News Feed
+                    </a>
+        </div>
+
+        <br/><br/>
+
+        <div align="left">Saved Simulations:</div>
+
+        <div id="accordion" align="left">
+            <div class="card">
+                <div class="card-header">
+                    <a class="card-link" data-toggle="collapse" href="#collapseOne">
+                        Machine Learning
+                    </a>
+                </div>
+                <div id="collapseOne" class="collapse" data-parent="#accordion">
+                    <div class="card-body" id="ml">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapseTwo">
+                        Linear Algebra
+                    </a>
+                </div>
+                <div id="collapseTwo" class="collapse" data-parent="#accordion">
+                    <div class="card-body" id="la">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
+                        Dynamic Programming
+                    </a>
+                </div>
+                <div id="collapseThree" class="collapse" data-parent="#accordion">
+                    <div class="card-body" id="idp">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" href="#collapseFour">
+                        DBMS
+                    </a>
+                </div>
+                <div id="collapseFour" class="collapse" data-parent="#accordion">
+                    <div class="card-body" id="dbms">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

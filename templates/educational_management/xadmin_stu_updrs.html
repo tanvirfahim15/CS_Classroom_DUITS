@@ -1,0 +1,74 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    
+    <meta charset=utf-8>
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <SCRIPT Language=javascript>
+ <!--
+  function isValid()
+  {	
+  	if(formupdate.sname.value == "")
+  	{	
+  		window.alert("Student name is empty！");
+ 		document.formupdate.elements[0].focus();
+  		return  false;
+  	}
+    if(formupdate.ssex.value == "")
+    { 
+      window.alert("Student gender is empty！");
+    document.formupdate.elements[1].focus();
+      return  false;
+    }
+    if(formupdate.sage.value == "")
+    { 
+      window.alert("Student gender is empty！");
+    document.formupdate.elements[2].focus();
+      return  false;
+    }
+  	if(formupdate.sdept.value=="")
+  	{
+  	    window.alert("Student professional is empty！");
+  	    document.formupdate.elements[3].focus();
+  	    return  false;
+  	}
+  	if(formupdate.sphone.value=="")
+  	{
+  	    window.alert("Student class is empty！");
+  	    document.formupdate.elements[4].focus();
+  	    return  false;
+  	}
+  	if(formupdate.scode.value=="")
+  	{
+  	    window.alert("Student password is empty！");
+  	    document.formupdate.elements[5].focus();
+  	    return  false;
+  	}
+  	formupdate.submit();
+ }
+  -->
+  </SCRIPT>		
+
+  </head>
+  
+  <body bgcolor="#8dd8f8">
+     <div align="center"><font size="5" color="#000080" face="华文楷体"><b>Modify student information<br><br><br></b></font></div>
+     <form name="formupdate" action="{{ url_for('admin_stu_updrs') }}" method="post" onsubmit="return isValid(this);">
+     
+     <table class="table1" width="650" border="1" cellspacing="0" cellpadding="0" align="center">
+     <tr><th height="25" colspan="2"><input type="hidden" name="action" value="update"/><font size="4">Please enter the revised student information in the table below.</font></th></tr>
+
+	<tr><td>Student number：</td><td><input type="text" name="sno" value="{{ data[0] }}" readonly/></td></tr>
+	<tr><td>student name：</td><td><input type="text" name="sname" value="{{ data[1] }}"/></td></tr>
+  <tr><td>Student gender：</td><td><input type="text" name="ssex" value="{{ data[2] }}"/></td></tr>
+  <tr><td>Student age：</td><td><input type="text" name="sage" value="{{ data[3] }}"/></td></tr>
+	<tr><td>Student major：</td><td><input type="text" name="sdept" value="{{ data[4] }}"/></td></tr>
+  <tr><td>phone number：</td><td><input type="text" name="sphone" value="{{ data[5] }}"</td></tr>
+	<tr><td>Student password：</td><td><input type="text" name="spassword" value="{{ spassword }}"/></td></tr>
+     <tr><td><input type="reset" value="重  置"/></td><td><input type="submit" value="提  交"/></td></tr>
+    </table>
+     </form>
+  </body>
+</html>

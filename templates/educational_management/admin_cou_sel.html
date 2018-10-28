@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+  </head>
+  
+  <body bgcolor="#8dd8f8">
+{#    <form name="formselcou" action="{{ url_for('admin_cou_selrs') }}" method="post">#}
+{#<div align="center">#}
+{#    <font face="华文楷体" color="#0000a0"><strong><font size="5">Query course information#}
+{#    </font></strong></font>#}
+{#</div>#}
+{#    <br><br>#}
+{#    <table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">#}
+{#    <tr><th colspan="2" height="25"><font size="4">Query condition (approximate query)</font></th></tr>#}
+{#    <tr><td height="25">Course number：</td><td><input type="text" name="cno"/></td></tr>#}
+{#    <tr><td height="25">Course Title：</td><td><input type="text" name="cname"/></td></tr>#}
+{#    <tr><td height="25">Course credits：</td><td><input type="text" name="ccredit"/></td></tr>#}
+{#    <tr><td height="20"><input type="reset" value="重  置"/></td><td><input type="submit" value="提  交"/></td></tr>#}
+{#    </table>#}
+{#    </form>#}
+
+ <div align="center"><strong><font color="#000080" size="5" face="华文楷体">Query course information<br><br><br></font></strong></div>
+    <table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">
+
+       <tr><td height="25">Course id</td>
+                <td height="25">Course name</td>
+                <td height="25">Credits</td>
+            </tr>
+
+         {% for cno, cname , ccredit in course_data%}
+
+
+            <tr><td height="25">{{ cno }}</td>
+                <td height="25">{{ cname}}</td>
+                <td height="25">{{ ccredit }}</td>
+            </tr>
+{#             <tr>{{ cname}}</tr>#}
+{#             <br>#}
+
+         {% endfor %}
+
+        </table>
+
+  </body>
+</html>

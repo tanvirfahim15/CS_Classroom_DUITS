@@ -1,0 +1,13 @@
+{% extends '/tutorial/layout.html' %}
+
+{% block body %}
+    <br/>
+    <div class="jumbotron text-center">
+        <h1>Online Forum</h1>
+        <p class="lead">This is a simple forum for create, edit and delete of articles<br> This is mainly for my SDP Lab project</p>
+        {% if session['username'] != NULL %}
+        <a class="btn btn-success" href="/dashboard">Dashboard</a>
+        {% endif %}
+        <a class="btn btn-success" href="/articles">Articles</a>
+    </div>
+{% endblock %}

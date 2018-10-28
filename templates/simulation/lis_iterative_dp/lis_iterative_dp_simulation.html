@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>LIS Iterative Dp Simulation</title>
+
+    <script>
+        var data = {{data|tojson}};
+        var lis_array = data[0];
+        var n = data[1];
+        var cur_col = 1;
+        var outer_ind = 0;
+        var mark = data[2];
+        var rowWidth = screen.width * 8 /10;
+        rowWidth /= (n + 2);
+        var nRowWidth = screen.width * 8 /10;
+        nRowWidth /= 5;
+        window.onload = function() {
+            login();
+            drawTable();
+        };
+        function drawTable() {
+            var nTable = document.getElementById("lengthTableTop");
+            var ntableContent = "";
+            ntableContent += "<tr>";
+            ntableContent += "<td width='"+nRowWidth+"' align='center'> Outer Loop running for ";
+            if(cur_col == 0) ntableContent += "-INF";
+            else ntableContent += parseFloat(lis_array[1][cur_col]).toFixed(0) + " (Index: " + parseFloat(cur_col).toFixed(0) + ")";
+            ntableContent += "</td>";
+            ntableContent += "</tr>"
+            var lTable = document.getElementById("lengthTableLis");
+            var lTableContent = "";
+            lTableContent += "<tr>";
+            lTableContent += "<tr>";
+            lTableContent += "<td width='"+rowWidth+"' align='center'>" + '#' + "</td>";
+            if(outer_ind == 0) lTableContent += "<td width='"+rowWidth+"' align='center' style='color: yellow'>" + '-INF' + "</td>";
+            else lTableContent += "<td width='"+rowWidth+"' align='center'>" + '-INF' + "</td>";
+            if(outer_ind == 0) {
+                ntableContent += "<tr>";
+                ntableContent += "<td width='"+nRowWidth+"' align='center'> Inner Loop running for -INF";
+                ntableContent += " (Index: 0) </td></tr>";
+                ntableContent += "<tr><td width='"+nRowWidth+"' align='center'> Compare Length[" + parseFloat(cur_col).toFixed(0) + "] and Length[0]";
+                ntableContent += "</td></tr>";
+            }
+            else {
+                ntableContent += "<tr>";
+                ntableContent += "<td width='"+nRowWidth+"' align='center'> Inner Loop running for " + parseFloat(lis_array[1][outer_ind]).toFixed(0);
+                ntableContent += " (Index: " + parseFloat(outer_ind).toFixed(0) + ")</td></tr>";
+                ntableContent += "<tr><td width='"+nRowWidth+"' align='center'>Compare Length[" + parseFloat(cur_col).toFixed(0) + "] and Length[" + parseFloat(outer_ind) + "]";
+                ntableContent += "</td></tr>";
+            }
+            ntableContent += "<tr><td width='"+nRowWidth+"' align='center'> Result so far:";
+            for(var i=1; i<=n; i++) {
+                if(i<=cur_col && lis_array[5][i] == 1) ntableContent += " " + parseFloat(lis_array[1][i]).toFixed(0);
+            }
+            ntableContent += "</td></tr>";
+            for(var i=1; i<=n; i++) {
+                if(i == outer_ind) lTableContent += "<td width='"+rowWidth+"' align='center' style='color: yellow'>" + lis_array[1][i] + "</td>";
+                else if(i<=cur_col && lis_array[5][i] == 1) lTableContent += "<td width='"+rowWidth+"' align='center' style='color: #3bdd79'>" + lis_array[1][i] + "</td>";
+                else lTableContent += "<td width='"+rowWidth+"' align='center'>" + lis_array[1][i] + "</td>";
+            }
+            lTableContent += "</tr>";
+            if(cur_col<n && lis_array[1][cur_col+1] > lis_array[1][outer_ind] && lis_array[2][cur_col+1]-1 == lis_array[2][outer_ind]) document.getElementById("pseudocode").innerHTML="<span style='color: crimson'>length_array[i] = length_array[j] + 1 and parent_array[i] = arr[j]</span>";
+            else if(lis_array[1][cur_col] > lis_array[1][outer_ind] && lis_array[2][cur_col]-1 == lis_array[2][outer_ind]) document.getElementById("pseudocode").innerHTML="<span style='color: crimson'>length_array[i] = length_array[j] + 1 and parent_array[i] = arr[j]</span>";
+            else document.getElementById("pseudocode").innerHTML="<span>length_array[i] = length_array[j] + 1 and parent_array[i] = arr[j]</span>";
+            lTableContent += "<tr>";
+            lTableContent += "<td width='"+rowWidth+"' align='center'>" + 'Length' + "</td>";
+            for(var i=0; i<=cur_col; i++) {
+                if(i == outer_ind) lTableContent += "<td width='"+rowWidth+"' align='center' style='color: yellow'>" + lis_array[2][i] + "</td>";
+                else if(i == cur_col) lTableContent += "<td width='"+rowWidth+"' align='center' style='color: crimson'>" + lis_array[2][i] + "</td>";
+                else lTableContent += "<td width='"+rowWidth+"' align='center'>" + lis_array[2][i] + "</td>";
+            }
+            for(var i = cur_col + 1; i<=n; i++) {
+                lTableContent += "<td width='"+rowWidth+"' align='center'>" + '-' + "</td>";
+            }
+            lTableContent += "</tr>";
+            lTableContent += "<tr>";
+            lTableContent += "<td width='"+rowWidth+"' align='center'>" + 'Parent' + "</td>";
+            if(outer_ind == 0) lTableContent += "<td width='"+rowWidth+"' align='center' style='color: yellow'>" + 'NIL' + "</td>";
+            else lTableContent += "<td width='"+rowWidth+"' align='center'>" + 'NIL' + "</td>";
+            for(var i=1; i<=cur_col; i++) {
+                if(i == outer_ind) lTableContent += "<td width='"+rowWidth+"' align='center' style='color: yellow'>" + lis_array[3][i] + "</td>";
+                else lTableContent += "<td width='"+rowWidth+"' align='center'>" + lis_array[3][i] + "</td>";
+            }
+            for(var i = cur_col + 1; i<=n; i++) {
+                lTableContent += "<td width='"+rowWidth+"' align='center'>" + '-' + "</td>";
+            }
+            lTableContent += "</tr>";
+            ntableContent += "</tr>";
+            nTable.innerHTML = ntableContent;
+            lTable.innerHTML = lTableContent;
+        }
+        window.onkeydown = function (event) {
+            processKey(event);
+        };
+        function processKey(event) {
+            var key = event.keyCode;
+            if(key==39) {
+                runForward();
+            }
+            else if(key==37) {
+                runBackward();
+            }
+        }
+        function runForward() {
+            outer_ind++;
+            if(outer_ind>cur_col) {
+                outer_ind = 0;
+                cur_col++;
+                if(cur_col >= n) {
+                    cur_col = n;
+                    outer_ind = n;
+                }
+            }
+            drawTable();
+        }
+        function runBackward() {
+            outer_ind--;
+            if(outer_ind<0) {
+                outer_ind = 0;
+                cur_col--;
+                if(cur_col<=0) cur_col = 1;
+            }
+            drawTable();
+        }
+        function save() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=lis&algo_id={{name}}&username="+data_login['username']);
+        }
+        function remove() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=lis&algo_id={{name}}&username="+data_login['username']);
+        }
+        function loadSavedState() {
+            var saved = {{saved}}
+            console.log(saved);
+            if (saved == 1){
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+    </script>
+    <style>
+                .floatedTable {
+            float:left;
+        }
+        .inlineTable {
+            display: inline-block;
+        }
+    </style>
+
+    {% include "nav.html" %}
+
+</head>
+<body>
+    <div align="center">
+        <div style="width: 80%">
+
+            <h2 align="center">Longest Increasing Subsequence Simulation</h2>
+
+            <button type="button" class="btn btn-dark" onclick="runBackward()" style="width: 150px">Run Backward</button>
+            <button type="button" class="btn btn-dark" onclick="runForward()" style="width: 150px">Run Forward</button>
+            <button type="button" class="btn btn-success" id="save" onclick="save()" style="width: 150px">Save</button>
+            <br/><br/>
+            <a href="/idp/longest-increasing-subsequence/entry">
+                <button type="button" class="btn btn-dark btn-lg">Create Simulation</button>
+            </a>
+            <br/>
+            <br/>
+
+            <table class="table table-dark table-striped table-bordered" style="width: 80%">
+                <tbody id="lengthTableTop" style="font-weight: bold;">
+                </tbody>
+            </table>
+
+            <div align="left" class="table-dark" style="width: 50%;float: right">
+
+                <br/>
+                <div style="margin-left: 30px;">
+                    <code style="color: white;font-weight: bold;">
+                        Pseudocode:<br/><br/>
+                        arr[ ] = Given Array;<br/><br/>
+                        for i = 0 to n:<br/>
+                        &emsp;&emsp;length_array[i] = 0;<br/><br/>
+                        for i = 0 to n:<br/>
+                        &emsp;&emsp;parent_array[i] = 0;<br/><br/>
+                        for i = 0 to n:<br/>
+                        &emsp;&emsp;for j = 0 to i-1:<br/>
+                        &emsp;&emsp;&emsp;&emsp;if <span style="color: #3bdd79">arr[j] > arr[i] and length_array[j] + 1 > length_array[i]:</span>
+                        <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                        <span id="pseudocode"> length_array[i] = length_array[j] + 1 and parent_array[i] = arr[j]</span><br/>
+                        <br/>
+                    </code>
+                </div>
+
+            </div>
+            <br/><br/><br/><br/>
+            <table class="table table-dark table-striped table-bordered" style="width: 50%;float: left;">
+                <thead class="thead-dark">
+                    <th>
+                        Length Table
+                    </th>
+                </thead>
+                <tbody id="lengthTableLis" style="font-weight: bold;font-size: large">
+                </tbody>
+            </table>
+
+            <br/>
+            <br/>
+
+            <br/>
+
+            <br/>
+            <br/>
+
+        </div>
+    </div>
+</body>
+
+
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Linear Regression Entry</title>
+
+
+    <script>
+
+        window.onload = function() {
+            var data = {{data|tojson}};
+            console.log(data);
+            drawGraph();
+            document.getElementById("entry").addEventListener("keyup", updateGraph);
+            if (data != null){
+
+                document.getElementById('msg').innerHTML='<b style="color: red">'+data['msg']+'</b>'
+                document.getElementById("entry").innerText = data['data'];
+                console.log()
+                for(var i=0;i<data['data'].split('\n').length;i++){
+                    var line = data['data'].split('\n')[i].split(',');
+                    points.push([parseFloat(line[0]),parseFloat(line[1])]);
+
+                }
+                drawGraph();
+
+            }
+
+            login();
+        };
+
+
+
+
+
+        var points = [];
+        var zoom = 1;
+
+        function clearGraph() {
+            var oldCanvas = document.getElementById('graph');
+            document.getElementById('graphParent').removeChild(oldCanvas)
+
+            var canvas = document.createElement('canvas');
+            canvas.id = 'graph';
+            canvas.style.border='1px solid #d3d3d3';
+            canvas.width = 700;
+            canvas.height = 700;
+            document.getElementById('graphParent').appendChild(canvas);
+        }
+
+        function drawGraph() {
+            clearGraph();
+            var c = document.getElementById("graph");
+            c.addEventListener("click", getClickPosition, false);
+            var ctx = c.getContext("2d");
+            ctx.strokeStyle = "#868a88";
+            ctx.beginPath();
+            for (var i=50;i<c.width;i+=50){
+                ctx.moveTo(i,0);
+                ctx.lineTo(i,c.height);
+                ctx.stroke();
+            }
+            for (var i=50;i<c.height;i+=50){
+                ctx.moveTo(0,i);
+                ctx.lineTo(c.width,i);
+                ctx.stroke();
+            }
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.strokeStyle = "#000000";
+            ctx.moveTo(c.width/2,0);
+            ctx.lineTo(c.width/2,c.height);
+            ctx.stroke();
+            ctx.moveTo(0,c.height/2);
+            ctx.lineTo(c.width,c.height/2);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.font = "12px";
+            var x_max = c.width/(zoom*2);
+            var x_min = -x_max;
+            var y_max = c.height/(zoom*2);
+            var y_min = -y_max;
+            ctx.strokeText(x_max.toString(),c.width-25,(c.height/2)-5);
+            ctx.strokeText(x_min.toString(),5,(c.height/2)-5);
+            ctx.strokeText(y_max.toString(),(c.width/2)+5,10);
+            ctx.strokeText(y_min.toString(),(c.width/2)+5,(c.height)-5);
+
+            ctx.beginPath();
+            ctx.fillStyle = "#dd270f";
+            var entry = document.getElementById('entry');
+            entry.value = "";
+            for (var i=0;i<points.length;i++){
+                ctx.fillRect((points[i][0]*zoom)+c.width/2,-(points[i][1]*zoom)+c.width/2,5,5);
+                if(i==0){
+                    entry.value = points[i][0].toString()+","+points[i][1].toString();
+
+                }
+                else{
+                    entry.value +="\r\n"+ points[i][0].toString()+","+points[i][1].toString();
+
+                }
+            }
+            ctx.closePath();
+
+        }
+
+        function getClickPosition(e) {
+            var c = document.getElementById("graph");
+            var x = (e.layerX-(c.width/2))/zoom;
+            var y = ((c.height/2) - e.layerY)/zoom;
+            points.push([x,y]);
+            drawGraph();
+        };
+
+        function undo() {
+            points.pop();
+            drawGraph();
+        }
+
+        function zoomIn() {
+            if(zoom>=16){
+                return;
+            }
+            zoom *= 2;
+            drawGraph();
+        }
+
+        function zoomOut() {
+            if(zoom<=1/16){
+                return;
+            }
+            zoom /= 2;
+            drawGraph();
+        }
+
+        function updateGraph(event) {
+            var temp_points = []
+            var text = document.getElementById('entry').value;
+            var rows = text.split('\n');
+            for(var i=0;i<rows.length;i++){
+                var cols = rows[i].split(',');
+                console.log(cols);
+                if(cols.length!=2){
+                    return;
+                }
+                var x = parseFloat(cols[0]);
+                var y = parseFloat(cols[1]);
+                if(isNaN(x)||isNaN(y)){
+                    return;
+                }
+                temp_points.push([x,y]);
+            }
+            points = temp_points;
+            drawGraph();
+        }
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+
+<div align="center"><div  style="width: 80%">
+    <h2>Linear Regression Data Entry</h2>
+    <br/>
+    <table class="table table-dark">
+        <thead>
+        <td id="msg"><b>Input Data:</b></td>
+        </thead>
+    </table>
+
+    <form action = "/simulation/ml/linear-regression/entry_data" method = "POST">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="iterations">Iterations:</label>
+                    <input type="text" class="form-control" id="iterations" name="iterations" width="30px" value="1500">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="steps">Steps:</label>
+                    <input type="text" class="form-control" id="steps" name="steps" width="30px" value="100">
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label for="alpha">Alpha:</label>
+                    <input type="text" class="form-control" id="alpha" name="alpha" width="30px" value="0.01">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="theta0">Theta0:</label>
+                    <input type="text" class="form-control" id="theta0" name="theta0" width="30px" value="0.0">
+                </div>
+            </div>
+            <div class="col">
+
+                <div class="form-group">
+                    <label for="theta1">Theta1:</label>
+                    <input type="text" class="form-control" id="theta1" name="theta1" width="30px" value="0.0">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" hidden>
+            <textarea class="form-control" rows="20" id="entry" name="entry"></textarea>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-dark btn-lg" value="Submit">
+        </div>
+    </form><br/>
+
+
+
+    <div align="center" id="graphParent">
+        <canvas id="graph" width="700" height="700" style="border:1px ;"></canvas>
+    </div>
+
+    <button onclick="zoomIn()" class="btn" style="width: 250px">Zoom in</button>
+    <button onclick="zoomOut()" class="btn" style="width: 250px">Zoom out</button>
+    <button onclick="undo()" class="btn" style="width: 250px">Undo</button>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+
+</div>
+</div>
+
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

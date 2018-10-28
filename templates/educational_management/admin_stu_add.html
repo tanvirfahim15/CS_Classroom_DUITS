@@ -1,0 +1,172 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title></title>
+     <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+ <SCRIPT Language="javascript">
+ <!--
+  function isValid()
+  {	
+  	if(formaddstu.sno.value == "")
+  	{	
+  		window.alert("Student number cannot be empty！");
+ 		document.formaddstu.elements[0].focus();
+  		return  false;
+  	}
+  	if(formaddstu.sname.value == "")
+  	{
+  		window.alert("Name cannot be empty！");
+  		document.formaddstu.elements[1].focus();
+  		return  false; 
+  	}
+  	
+    if(formaddstu.ssex.value == "")
+    {
+      window.alert("Gender cannot be empty！");
+      document.formaddstu.elements[2].focus();
+      return  false; 
+    }
+    if(formaddstu.sage.value == "")
+    {
+      window.alert("Age cannot be empty！");
+      document.formaddstu.elements[3].focus();
+      return  false; 
+    }
+  	if(formaddstu.sdept.value == "")
+  	{
+  		window.alert("Professional can't be empty！");
+  		document.formaddstu.elements[4].focus();
+  		return  false; 
+  	}
+  	if(formaddstu.spassword.value == "")
+  	{
+  		window.alert("password can not be blank！");
+  		document.formaddstu.elements[6].focus();
+  		return  false; 
+  	}
+  	formaddstu.submit();
+ }
+  -->
+  </SCRIPT>		
+<SCRIPT Language="javascript">
+ <!--
+  function isValid2()
+  {	
+  	if(formaddcouxls.filepath.value == "")
+  	{	
+  		window.alert("Please select a file");
+ 		
+  		return  false;
+  	}
+  	 formaddcouxls.submit();
+ }
+  -->
+  </SCRIPT>
+      
+      
+{#      <script>#}
+{#          var oldVal = "";#}
+{#$("#sno").on("change keyup paste", function() {#}
+{#    var currentVal = $(this).val();#}
+{#    if(currentVal == oldVal) {#}
+{#        return; //check to prevent multiple simultaneous triggers#}
+{#    }#}
+{##}
+{#    oldVal = currentVal;#}
+{#    //action to be performed on textarea changed#}
+{#    alert("changed!");#}
+{#});#}
+{##}
+{#      </script>#}
+      
+      
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+
+      $("#sname").change(function(){
+         var sname=$('#sname').val()
+          alert("sname")
+        $.post("/receivedata", {"sname": sname})
+    });
+
+    $("#sno").change(function(){
+        var sno=$('#sno').val()
+        alert("sno")
+        $.post("/receivedata", {"sno": sno})
+
+    });
+
+
+
+      $("#ssex").change(function(){
+          var ssex=$('#ssex').val()
+        $.post("/receivedata", {"ssex": ssex})
+    });
+
+      $("#sage").change(function(){
+          var sage=$('#sage').val()
+        $.post("/receivedata", {"sage": sage})
+    });
+
+    $("#sphone").change(function(){
+          var sphone=$('#sphone').val()
+        $.post("/receivedata", {"sphone": sphone})
+    });
+
+    $("#spassword").change(function(){
+          var sphone=$('#spassword').val()
+        $.post("/receivedata", {"spassword": sphone})
+    });
+
+
+});
+</script>
+
+
+
+
+  </head>
+  
+  <body bgcolor="#8dd8f8">
+  <form name="formaddstu" role="form" action="{{ url_for('admin_stu_add') }}" method="post" onsubmit="return isValid(this);"><div align="center"> 
+    </div><table class="table1" border="1" width="600" height="120" align="center" cellspacing="0" cellpadding="0">
+    <tbody>
+    <tr><th colspan="2" height="25"><font size="4">Please enter student information</font></th></tr>
+    <tr><td height="20">Student number：</td><td><input type="text" id="sno" name="sno"/></td></tr>
+    <tr><td height="20">student name：</td><td><input type="text" id="sname" name="sname"/></td></tr>
+    <tr><td height="20">gender：</td><td><input type="text" id="ssex" name="ssex"/></td></tr>
+    <tr><td height="20">Student age：</td><td><input type="text" id="sage" name="sage"/></td></tr>
+    <tr><td height="20">Student major：</td>
+    <td><SELECT name="sdept">
+     <OPTION>computer science and Technology</OPTION>
+     <OPTION>network engineering</OPTION>
+     <OPTION>Internet of Things</OPTION>
+     <OPTION>Embedded software engineering</OPTION>
+     <OPTION>Software engineering</OPTION>
+     <OPTION>Information management</OPTION>
+     </SELECT></td></tr>
+    <tr><td height="20">phone number：</td><td><input type="text" id="sphone"  name="sphone"/></td></tr>
+    <tr><td height="20">login password：</td><td><input type="text" id="spassword" name="spassword"/>
+    <input type="hidden" name="action" value="new"></td></tr>
+    <tr><td height="20"><input type="reset" value="RESET"/></td><td><input type="submit" value="SUBMIT"/></td></tr>
+    </tbody>
+    </table>
+    
+    </form>
+    <br/><br/><br/>
+    <form name="formaddcouxls" action="{{ url_for('admin_stu_import') }}" method="post" onsubmit="return isValid2(this);" enctype="multipart/form-data">
+    <table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">
+    <tr height="25"><th colspan="2">Import students from Excel<input type="hidden" name="action" value="newstudent"></th></tr>
+    <tr height="25"><td>Please select a path：</td><td><input type="file" name="import_xls" /></td></tr>
+    <tr height="25"><td height="25"><input type="reset" value="重&nbsp&nbsp置"/></td><td><input type="submit" value="提&nbsp&nbsp交"/></td></tr>
+    </table>
+    </form><div align="center">
+    <strong><font color="#ff0000">Tip: Importing students from Excel must match the student ID, name, gender, age, department, phone number, and password in seven columns!
+  </font></strong></div>
+
+  </body>
+</html>

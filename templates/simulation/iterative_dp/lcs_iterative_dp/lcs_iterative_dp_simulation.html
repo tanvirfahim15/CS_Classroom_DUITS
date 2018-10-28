@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>LCS Simulation</title>
+
+
+    <script>
+        var data = {{data|tojson}};
+        var mark1 = data[0];
+        var mark2 = data[1];
+        var lengthTable = data[2];
+        var parentTable = data[3];
+        var string1 = data[4];
+        var string2 = data[5];
+
+        var currentRow = 1;
+        var currentColumn = 1;
+
+        console.log(data);
+
+        var rowWidth = screen.width * 8 /10;
+        rowWidth /= (string1.length + 2);
+
+        window.onload = function() {
+            drawTable(currentRow, currentColumn);
+            login();
+            loadSavedState();
+
+            // document.getElementById("footer").className += " fixed-bottom";
+
+        };
+
+
+        window.onkeydown = function (event) {
+            processKey(event);
+        };
+
+        function drawTable(row, column){
+            if(parentTable[row][column]==0){
+                document.getElementById("pseudocode1").innerHTML="<span style='color: #ff4c00'>length_table[i][j]</span> " +
+                    "= <span style='color: #3bdd79'> length_table[i-1][j-1]</span> + 1";
+                document.getElementById("pseudocode2").innerHTML="length_table[i][j] = max(length_table[i-1][j], length_table[i][j-1])";
+            }
+            else if(parentTable[row][column]==1){
+                document.getElementById("pseudocode1").innerHTML="length_table[i][j] =  length_table[i-1][j-1] + 1";
+                document.getElementById("pseudocode2").innerHTML="<span style='color: #ff4c00'>length_table[i][j]</span>" +
+                    " = max(<span style='color: #3bdd79'>length_table[i-1][j]</span>, length_table[i][j-1])";
+
+            }
+            else{
+                document.getElementById("pseudocode1").innerHTML="length_table[i][j] =  length_table[i-1][j-1] + 1";
+                document.getElementById("pseudocode2").innerHTML="<span style='color: #ff4c00'>length_table[i][j]</span>" +
+                    " = max(length_table[i-1][j], <span style='color: #3bdd79'>length_table[i][j-1]</span>)";
+            }
+            var lTable = document.getElementById("lengthTable");
+            var lTableContent = "<tr>";
+            lTableContent += "<td width='"+rowWidth+"' align='center'>" + '#' + "</td>";
+            lTableContent += "<td width='"+rowWidth+"' align='center'>" + '' + "</td>";
+            for(var k = 0; k < string1.length; k++){
+                if(mark1[row-1][column-1][k]==1)
+                    lTableContent += "<td width='"+rowWidth+"' align='center' style='color: #ff9c00'>" + string1[k] + "</td>";
+                else
+                    lTableContent += "<td width='"+rowWidth+"' align='center'>" + string1[k] + "</td>";
+
+            }
+            lTableContent+="</tr>";
+
+            lTableContent += "<tr>";
+            lTableContent += "<td width='"+rowWidth+"' align='center'>" + '' + "</td>";
+            for(var k = 0; k <= string1.length; k++){
+                if(row==1&&((column==k&&parentTable[row][column]==1)||(column==k+1&&parentTable[row][column]==0)))
+                    lTableContent += "<td width='"+rowWidth+"' align='center' style='color: #3bdd79'>" + 0 + "</td>";
+                else
+                    lTableContent += "<td width='"+rowWidth+"' align='center'>" + 0 + "</td>";
+            }
+            lTableContent+="</tr>";
+
+
+            for (var k=1; k<=string2.length; k++){
+
+                lTableContent += "<tr>";
+                if (mark2[row-1][column-1][k-1])
+                    lTableContent += "<td width='"+rowWidth+"' align='center'  style='color: #ff9c00'>" + string2[k-1] + "</td>";
+                else
+                    lTableContent += "<td width='"+rowWidth+"' align='center'>" + string2[k-1] + "</td>";
+                if(k==row&&column==1&&parentTable[row][column]==-1)
+                    lTableContent += "<td width='"+rowWidth+"' align='center' style='color: #3bdd79'>" + 0 + "</td>";
+                else
+                    lTableContent += "<td width='"+rowWidth+"' align='center'>" + 0 + "</td>";
+                for(var l = 1; l <=string1.length; l++){
+                    if(k>row || (k==row && l>column))
+                        lTableContent += "<td width='"+rowWidth+"' align='center'></td>";
+                    else if(k==row&&l==column)
+                        lTableContent += "<td width='"+rowWidth+"' align='center' style='color: #ff4c00'>" + lengthTable[k][l] + "</td>";
+                    else if(k==row-1&&l==column-1 && parentTable[row][column]==0)
+                        lTableContent += "<td width='"+rowWidth+"' align='center' style='color: #3bdd79'>" + lengthTable[k][l] + "</td>";
+                    else if(k==row-1&&l==column && parentTable[row][column]==1)
+                        lTableContent += "<td width='"+rowWidth+"' align='center' style='color: #3bdd79'>" + lengthTable[k][l] + "</td>";
+                    else if(k==row&&l==column-1 && parentTable[row][column]==-1)
+                        lTableContent += "<td width='"+rowWidth+"' align='center' style='color: #3bdd79'>" + lengthTable[k][l] + "</td>";
+                    else
+                        lTableContent += "<td width='"+rowWidth+"' align='center'>" + lengthTable[k][l] + "</td>";
+
+                }
+                lTableContent+="</tr>";
+            }
+            lTable.innerHTML=lTableContent;
+        }
+
+        function processKey(event) {
+
+            var key = event.keyCode;
+            if(key==39) {
+                runForward();
+            }
+            else if(key==37) {
+                runBackward();
+            }
+        }
+
+        function runForward() {
+            if(currentRow>string2.length)
+                return;
+            if (currentRow==string2.length&&currentColumn==string1.length)
+                return;
+            currentColumn++;
+            if(currentColumn>string1.length&&currentRow<string2.length){
+                currentColumn=1;
+                currentRow++;
+            }
+            drawTable(currentRow, currentColumn);
+        }
+
+        function runBackward() {
+            if(currentRow==1&&currentColumn==1)
+                return;
+            currentColumn--;
+            if(currentColumn==0){
+                currentColumn=string1.length;
+                currentRow--;
+            }
+            drawTable(currentRow, currentColumn);
+        }
+
+        function save() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=lcs&algo_id={{name}}&username="+data_login['username']);
+        }
+
+
+        function remove() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=lcs&algo_id={{name}}&username="+data_login['username']);
+        }
+
+        function loadSavedState() {
+            var saved = {{saved}}
+            console.log(saved);
+            if (saved == 1){
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+
+        <h2 align="center">Longest Common Subsequence Simulation</h2>
+
+        <button type="button" class="btn btn-dark" onclick="runBackward()" style="width: 150px">Run Backward</button>
+        <button type="button" class="btn btn-dark" onclick="runForward()" style="width: 150px">Run Forward</button>
+        <button type="button" class="btn btn-success" id="save" onclick="save()" style="width: 150px">Save</button>
+
+        <br/>
+        <br/>
+
+
+        <table class="table table-dark table-striped table-bordered" style="width: 80%;">
+            <thead class="thead-dark">
+            <th>
+                Length Table
+            </th>
+            </thead>
+            <tbody id="lengthTable" style="font-weight: bold;font-size: large">
+            </tbody>
+        </table>
+        <br/>
+        <br/>
+        <div align="left" class="table-dark" style="width: 80%">
+
+            <br/>
+            <div style="margin-left: 30px;">
+                <code style="color: white;font-weight: bold;">
+                    Pseudocode:<br/><br/>
+                    for i = 0 to string1.length:<br/>
+                    &emsp;&emsp;length_table[0][i] = 0;<br/><br/>
+                    for i = 0 to string2.length:<br/>
+                    &emsp;&emsp;length_table[i][0] = 0;<br/><br/>
+                    for i = 1 to string2.length:<br/>
+                    &emsp;&emsp;for j = 1 to string1.length:<br/>
+                    &emsp;&emsp;&emsp;&emsp;if string1[i-1] == string2[j-1]:
+                    <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                    <span id="pseudocode1"> length_table[i][j] = length_table[i-1][j-1] + 1</span><br/>
+                    &emsp;&emsp;&emsp;&emsp;else:<br/>
+                    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                    <span id="pseudocode2">length_table[i][j] = max(length_table[i-1][j], length_table[i][j-1])</span><br/><br/>
+                </code>
+            </div>
+
+        </div>
+        <br/>
+
+        <a href="/simulation/idp/longest-common-subsequence/entry">
+            <button type="button" class="btn btn-dark btn-lg">Create Simulation</button>
+        </a>
+        <br/>
+        <br/>
+
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

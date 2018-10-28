@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Knapsack DP Simulation</title>
+    <script>
+
+        window.onload=function () {
+            login();
+        }
+
+   </script>
+    <script>
+        var data = {{data|tojson}};
+        var dp_array = data[0];
+        var number_of_items = data[1];
+        var items = data[2];
+        var weights = data[3];
+        var sack_capacity = data[4];
+        var row_ind = 1;
+        var col_ind = -1;
+        var rowWidth = screen.width * 11 /5;
+        rowWidth /= (n + 2);
+        window.onload = function() {
+            drawTable();
+        };
+        function drawTable() {
+            var pTable = document.getElementById("DpTableKnapsack");
+            var pTableContent = "";
+            pTableContent += "<tr>";
+            pTableContent += "<td width='"+rowWidth+"' align='center'>" + 'Capacity ->' + "</td>";
+            for(var i = 0; i <= sack_capacity; i++) {
+                if(i == col_ind) pTableContent += "<td width='"+rowWidth+"' align='center' style='color: yellow'>" + '' + parseFloat(i).toFixed(0) + ' units' + "</td>";
+                else pTableContent += "<td width='"+rowWidth+"' align='center'>" + '' + parseFloat(i).toFixed(0) + ' units' + "</td>";
+            }
+            pTableContent += "</tr>";
+            for(var i = 0; i < row_ind; i++) {
+                pTableContent += "<tr>";
+                if(i == 0) {
+                    pTableContent += "<td width='"+rowWidth+"' align='center'>" + 'Items' + "</td>";
+                }
+                else {
+                    pTableContent += "<td width='"+rowWidth+"' align='center'>" + parseFloat(i).toFixed(0) + "</td>";
+                }
+                if(i == row_ind - 1) {
+                    for (var k = 0; k <= sack_capacity; k++) {
+                        if(k == col_ind - weights[row_ind]) pTableContent += "<td width='" + rowWidth + "' align='center' style='color: crimson'>" + parseFloat(dp_array[i][k]).toFixed(0) + '+' + parseFloat(items[row_ind]).toFixed(0) + "</td>";
+                        else if (k == col_ind) pTableContent += "<td width='" + rowWidth + "' align='center' style='color: crimson'>" + parseFloat(dp_array[i][k]).toFixed(0) + "</td>";
+                        else pTableContent += "<td width='" + rowWidth + "' align='center'>" + parseFloat(dp_array[i][k]).toFixed(0) + "</td>";
+                    }
+                }
+                else {
+                    for (var k = 0; k <= sack_capacity; k++) {
+                        if (k == col_ind) pTableContent += "<td width='" + rowWidth + "' align='center' style='color: orange'>" + parseFloat(dp_array[i][k]).toFixed(0) + "</td>";
+                        else pTableContent += "<td width='" + rowWidth + "' align='center'>" + parseFloat(dp_array[i][k]).toFixed(0) + "</td>";
+                    }
+                }
+                pTableContent += "</tr>";
+            }
+            pTableContent += "<tr>";
+            pTableContent += "<td width='"+rowWidth+"' align='center' style='color: yellow'>" + parseFloat(row_ind).toFixed(0) + "</td>";
+            for(var i = 0; i < col_ind; i++) {
+                pTableContent += "<td width='"+rowWidth+"' align='center' style='color: orange'>" + parseFloat(dp_array[row_ind][i]).toFixed(0) + "</td>";
+            }
+            pTableContent += "<td width='"+rowWidth+"' align='center' style='color: crimson'>" + parseFloat(dp_array[row_ind][i]).toFixed(0) + "</td>";
+            for(var i = col_ind + 1; i <= sack_capacity; i++) {
+                pTableContent += "<td width='"+rowWidth+"' align='center' style='color: orange'>" + '-' + "</td>";
+            }
+            pTableContent += "</tr>";
+            for(var i = row_ind + 1; i <= number_of_items; i++) {
+                pTableContent += "<tr>";
+                if(i == 0) {
+                    pTableContent += "<td width='"+rowWidth+"' align='center'>" + 'Items' + "</td>";
+                }
+                else {
+                    pTableContent += "<td width='"+rowWidth+"' align='center'>" + parseFloat(i).toFixed(0) + "</td>";
+                }
+                for (var k = 0; k <= sack_capacity; k++) {
+                    if(k == col_ind) pTableContent += "<td width='" + rowWidth + "' align='center' style='color: orange'>" + '-' + "</td>";
+                    else pTableContent += "<td width='" + rowWidth + "' align='center'>" + '-' + "</td>";
+                }
+                pTableContent += "</tr>";
+            }
+            pTable.innerHTML = pTableContent;
+        }
+        window.onkeydown = function (event) {
+            processKey(event);
+        };
+        function processKey(event) {
+            var key = event.keyCode;
+            if(key==39) {
+                runForward();
+            }
+            else if(key==37) {
+                runBackward();
+            }
+        }
+        function runForward() {
+            if(col_ind == sack_capacity && row_ind == number_of_items) return;
+            col_ind++;
+            if(col_ind > sack_capacity) {
+                col_ind = 0;
+                row_ind++;
+                if(row_ind > number_of_items) {
+                    col_ind = sack_capacity;
+                    row_ind = number_of_items;
+                }
+            }
+            drawTable();
+        }
+        function runBackward() {
+            if(col_ind == 0 && row_ind == 1) return;
+            col_ind--;
+            if(col_ind < 0) {
+                col_ind = sack_capacity;
+                row_ind--;
+                if(row_ind < 1) {
+                    col_ind = 0;
+                    row_ind = 1;
+                }
+            }
+            drawTable();
+        }
+        function save() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=knapsack&algo_id={{name}}&username="+data_login['username']);
+        }
+        function remove() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=knapsack&algo_id={{name}}&username="+data_login['username']);
+        }
+        function loadSavedState() {
+            var saved = {{saved}}
+            console.log(saved);
+            if (saved == 1){
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+    </script>
+    <style>
+                .floatedTable {
+            float:left;
+        }
+        .inlineTable {
+            display: inline-block;
+        }
+    </style>
+
+    {% include "nav.html" %}
+
+</head>
+<body>
+    <div align="center">
+        <div style="width: 80%">
+
+            <h2 align="center">Knapsack Simulation</h2>
+
+            <button type="button" class="btn btn-dark" onclick="runBackward()" style="width: 150px">Run Backward</button>
+            <button type="button" class="btn btn-dark" onclick="runForward()" style="width: 150px">Run Forward</button>
+            <button type="button" class="btn btn-success" id="save" onclick="save()" style="width: 150px">Save</button>
+            <br/><br/>
+            <a href="/idp/knapsack/entry">
+                <button type="button" class="btn btn-dark btn-lg">Create Simulation</button>
+            </a>
+            <br/>
+            <br/>
+
+            <table class="table table-dark table-striped table-bordered" style="width: 80%">
+                <tbody id="lengthTableTop" style="font-weight: bold;">
+                </tbody>
+            </table>
+
+            <div align="left" class="table-dark" style="width: 45%;float: right;">
+
+                <br/>
+                <div style="margin-left: 30px;">
+                    <code style="color: white;font-weight: bold;">
+                        Pseudocode:<br/><br/>
+                        items[ ] = Profit from Items;<br/><br/>
+                        weight[ ] = Weight of the item;<br/><br/>
+
+                        for i = 1 to number_of_items:<br/>
+                        &emsp;&emsp;  for j = 0 to sack_capacity:<br/>
+                            &emsp;&emsp;&emsp;&emsp;if j - weight[i] >= 0:
+                            <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                            <span id="pseudocode1"> dp_array[i][j] = max(items[i] + dp_array[i-1][j - weight[i]], dp_array[i-1][j])</span><br/>
+                            &emsp;&emsp;&emsp;&emsp;else:<br/>
+
+                            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span id="pseudocode2"> dp_array[i][j] = max(dp_array[i][j], dp_array[i-1][j])</span><br/>
+                            <br/>
+                    </code>
+                </div>
+
+            </div>
+
+            <table class="table table-dark table-striped table-bordered" style="width: 50%; float: left;" >
+                <thead class="thead-dark">
+                    <th>
+                        DP Table
+                    </th>
+                </thead>
+                <tbody id="DpTableKnapsack" style="font-weight: bold;font-size: large">
+                </tbody>
+            </table>
+
+            <br/>
+            <br/>
+
+            <br/>
+            <br/>
+            <br/>
+
+        </div>
+    </div>
+</body>
+
+
+</html>

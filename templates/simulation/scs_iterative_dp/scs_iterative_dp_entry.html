@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>SCS Simulation Entry</title>
+    <script>
+        window.onload = function() {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        };
+    </script>
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h2 align="center">Shortest Common Supersequence Entry</h2>
+
+        <br/>
+        <br/>
+        <div align="left" style="width: 25%">
+            <form action = "/idp/shortest-common-supersequence/entry_data" method = "POST">
+                <div class="form-group">
+                    <label for="string1"><b>String 1:</b></label>
+                    <input type="text" class="form-control" name="string1" id="string1" maxlength="15" size="20">
+                </div>
+                <div class="form-group">
+                    <label for="string2"><b>String 2:</b></label>
+                    <input type="text" class="form-control" name="string2" id="string2" maxlength="15" size="20">
+                </div>
+                <div class="form-group" align="left">
+                    <input type="submit" class="btn btn-dark btn-lg" value="Submit">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

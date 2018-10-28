@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+ <script type="text/javascript">
+ <!--
+  function isValid()
+  {	
+  	if(document.formaddcou.cno.value == "")
+  	{	
+    	alert("Class number cannot be empty！");
+   		document.formaddcou.elements[0].focus();
+  		return  false;
+  	}
+  	if(document.formaddcou.cname.value == "")
+  	{
+  		alert("Course name cannot be empty！");
+  		document.formaddcou.elements[1].focus();
+  		return  false; 
+  	}
+  	if(formaddcou.ccredit.value == "")
+  	{
+  		window.alert("Course credits cannot be empty！");
+  		document.formaddcou.elements[2].focus();
+  		return  false; 
+  	}
+  	formaddcou.submit();
+ }
+  function isValid2()
+  {	
+  	if(document.formaddcouxls.filepath.value == "")
+  	{	
+  		alert("Please select a file");
+ 		
+  		return  false;
+  	}
+  	formaddcouxls.submit();
+ }
+ 
+   function   credit_test(txt){   
+     if(isNaN(txt)){   
+          alert("Credits can only enter numbers");
+          document.formaddcou.elements[2].focus(); 
+          return  false;   
+          }  
+    }  
+     -->
+   </script>
+  </head>
+  
+  <body bgcolor="#8dd8f8">
+  <form name="formaddcou" action="{{ url_for('admin_cou_add') }}" method="post" onsubmit="return isValid(this);"><div align="center">
+  <font size="5" face="Chinese corpus" color="#0000a0"><strong>Add course information</strong></font></div>
+  <br/><br/>
+  <table class="table1" border="1" width="600" height="120" align="center" cellspacing="0" cellpadding="0">
+    <tr align="center"><th colspan="2" height="25"><font size="4" face="Song"><strong>please</strong></font><font size="4" face="Song">Enter course information</font></th></tr>
+    <tr><td height="25">Course number：</td><td><input type="text" name="cno"/></td></tr>
+    <tr><td height="25">Course Title：</td><td><input type="text" name="cname"/></td></tr>
+    <tr><td height="25">Course credits：</td><td><input type="text" name="ccredit" onchange="credit_test(this.value)"/></td></tr>
+    <tr><td height="25"><input type="reset" value="Reset"/></td><td><input type="submit" value="Submit"/></td></tr>
+    </table>
+    </form>
+{#    <br/><br/><br/>#}
+{#    <form name="formaddcouxls" action="{{ url_for('admin_cou_import') }}" method="post" onsubmit="return isValid2(this);" enctype="multipart/form-data">#}
+{#    <table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">#}
+{#    <tr height="25"><th colspan="2">Import courses from Excel<input type="hidden" name="action" value="newcourse"></th></tr>#}
+{#    <tr height="25"><td>Please select a path：</td><td><input type="file" name="import_xls" /></td></tr>#}
+{#    <tr height="25"><td height="25"><input type="reset" value="weight&nbsp&nbspSet"/></td><td><input type="submit" value="mention&nbsp&nbspcross"/></td></tr>#}
+{#    </table>#}
+{#    </form><div align="center">#}
+{#    <strong><font color="#ff0000">mention示：Import courses from Excel Must match Course number、Course name, format of three columns of credits！#}
+{#  </font></strong>#}
+{##}
+{#  </div>#}
+
+  </body>
+</html>

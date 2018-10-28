@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>CS Classroom | Home</title>
+
+
+    <script>
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+            loadSubscribedState();
+        }
+
+        function subscribe() {
+            if (data_login['username'] == null) {
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('subscribe').innerText = "Unsubscribe";
+                    document.getElementById('subscribe').onclick = unsubscribe;
+                    document.getElementById('subscribe').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/blog/subscribe/{{user["username"]}}", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("");
+        }
+        function unsubscribe() {
+            if (data_login['username'] == null) {
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('subscribe').innerText = "Subscribe";
+                    document.getElementById('subscribe').onclick = subscribe;
+                    document.getElementById('subscribe').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/blog/unsubscribe/{{user["username"]}}", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("");
+        }
+
+         function loadSubscribedState() {
+            var subscribed = "{{subscribed}}";
+            if (subscribed == "True"){
+                document.getElementById('subscribe').innerText = "Unsubscribe";
+                document.getElementById('subscribe').onclick = unsubscribe;
+                document.getElementById('subscribe').className = "btn btn-danger";
+            }
+        }
+
+
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <br/>
+        <br/>
+        {% if user is none %}
+        <br/>
+        <br/>
+        <br/>
+        <h1>No such profile found</h1>
+        {% else %}
+            <h1 >&nbsp; {{user["username"]}}</h1>
+            {{user["institute"]}} {{user["country"]}}
+            <br/>
+                {% if own is none %}
+                <button type="button" class="btn btn-success " id="subscribe" onclick="subscribe()" style="width: 150px">Subscribe</button>
+                {% endif %}
+            <br/>
+            <hr/>
+            {% if articles.count() == 0 %}
+                <br/>
+                <br/>
+                <h1 style="color: #999999">No articles found</h1>
+            {% else %}
+                {% for item in articles %}
+                    <div align="left">
+                        <h4>
+                            <a href="/article/{{item['_id']}}">{{item['title']}}</a>
+                        </h4>
+                        {{item['date']}}<br/>
+                        {{item['body']  | safe}}
+                    </div>
+                    <br/>
+                    <hr/>
+
+                {% endfor %}
+            {% endif %}
+
+
+
+        {% endif %}
+
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

@@ -1,0 +1,62 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    
+    <meta charset=utf-8>
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <script type="text/javascript">
+<!--
+    function isValid(){
+        if(document.formaddtea.tno.value==""){
+           alert("Teacher ID is empty！");
+           document.formaddtea.elements[0].focus();
+   		   return  false;
+         }
+         if(document.formaddtea.tname.value==""){
+           alert("Teacher name is empty！");
+           document.formaddtea.elements[1].focus();
+   		   return  false;
+         }
+         if(document.formaddtea.tphone.value==""){
+           alert("Teacher name is empty！");
+           document.formaddtea.elements[3].focus();
+         return  false;
+         }
+         if(document.formaddtea.tpassword.value==""){
+           alert("Teacher password is empty！");
+           document.formaddtea.elements[4].focus();
+   		   return  false;
+         }
+        document.formaddtea.submit();
+    }
+-->
+    </script>
+
+  </head>
+  
+  <body bgcolor="#8dd8f8">
+  <form name="formaddtea" action="{{ url_for('admin_tea_add') }}" method="post" onsubmit="return isValid(this);"><div align="center">
+    <font color="#0000a0"><strong><font size="5" face="华文楷体">Add teacher information<br><br><br></font></strong></font></div><table class="table1" border="1" width="600" height="120" align="center" cellspacing="0" cellpadding="0">
+    <tr><th colspan="2" height="25"><font size="4">Please enter teacher information</font></th></tr>
+    <tr><td height="20">Teacher number：</td><td><input type="text" name="tno"/></td></tr>
+    <tr><td height="20">Teacher name：</td><td><input type="text" name="tname"/></td></tr>
+    <tr><td height="20">phone number：</td><td><input type="text" name="tphone"/></td></tr>
+    <tr><td height="20">login password：</td><td><input type="text" name="tpassword"/>
+    <input type="hidden" name="action" value="new"></td></tr>
+    <tr><td height="20"><input type="reset" value="重  置"/></td><td><input type="submit" value="提  交"/></td></tr>
+    </table>
+    </form>
+    <br/><br/><br/>
+    <form name="formaddcouxls" action="{{ url_for('admin_tea_import') }}" method="post" onsubmit="return isValid2(this);" enctype="multipart/form-data">
+    <table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">
+    <tr height="25"><th colspan="2">Import teacher from Excel<input type="hidden" name="action" value="newteacher"></th></tr>
+    <tr height="25"><td>Please select a path：</td><td><input type="file" name="import_xls" /></td></tr>
+    <tr height="25"><td height="25"><input type="reset" value="重&nbsp&nbsp置"/></td><td><input type="submit" value="提&nbsp&nbsp交"/></td></tr>
+    </table>
+    </form><div align="center">
+    <strong><font color="#ff0000">Tip: Importing a teacher from Excel must conform to the format of the job number, name, phone number, and password in four columns!
+  </font></strong></div>
+  </body>
+</html>

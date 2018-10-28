@@ -1,0 +1,101 @@
+<di1v class="col-md-3">
+{#<!----------------------add Assignment----------#}
+    <div class="card gedf-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="ml-2">
+                        <div class="h5 m-0">Add assignment</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <li class="list-group-item" align="center">
+            <a href="{{ url_for('classroom_feed.assingmnet') }}">Add Assignment</a>
+        </li>
+    </div>
+{#<!----------------------add class----------#}
+    <div class="card gedf-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="ml-2">
+                        <div class="h5 m-0">Add classtime</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <li class="list-group-item" align="center">
+            <a href="{{ url_for('classroom_feed.class_add') }}">Add Classtime</a>
+        </li>
+    </div>
+{#    <! ------------- Assignments Part -------------- >#}
+    <div class="card gedf-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="ml-2">
+                        <div class="h5 m-0">Your Assignments</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <li class="list-group-item" align="center">
+            <a href="#">Project progress-01</a>
+        </li>
+
+    </div>
+
+{#    -----------------Notifications------------------#}
+    <div class="card gedf-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="ml-2">
+                        <div class="h5 m-0">Notifications</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% for notify in notifications %}
+        <li class="list-group-item" align="center">
+            <a href="#">@{{ notify['username'] }} posted on '{{ notify['course_name'] }}' Classroom</a>
+{#            <a href="#" class="card-link">Dibyo have posted on 'SDP LAB' Classroom</a>#}
+        </li>
+        {% endfor %}
+        <li class="list-group-item" align="center">
+            <a href="#">@Ayush posted on 'SDP LAB' Classroom</a>
+{#            <a href="#" class="card-link">Dibyo have posted on 'SDP LAB' Classroom</a>#}
+        </li>
+{#        <div class="li" align="center">#}
+{#            <a href="#" class="card-link">Ayush have posted on 'SDP LAB' Classroom</a>#}
+{#            <a href="#" class="card-link">@Dibyo have posted on 'SDP LAB' Classroom</a>#}
+{#        </div>#}
+    </div>
+
+{#    ------------Populart Tutorials-----------------#}
+
+    <div class="card gedf-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="ml-2">
+                        <div class="h5 m-0">Popular Tutorials</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+{#            <h5 class="card-title">Popular Tutorials</h5>#}
+            <h6 class="card-subtitle mb-2 text-muted">How to use flask along with django</h6>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                card's content.</p>
+            <a href="#" class="card-link">go to article</a>
+            <a href="#" class="card-link">Another related link</a>
+        </div>
+    </div>
+</di1v>

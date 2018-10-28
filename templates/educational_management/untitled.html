@@ -1,0 +1,54 @@
+<form name="formaddstu" role="form" action="{{ url_for('admin_stu_add') }}" method="post" onsubmit="return isValid(this);">
+    <table>
+    <tr>
+        <div align="center" class="form-group"> 
+            <caption>Please enter student information：</caption>
+        </div>
+    </tr>
+    <tr>
+    <div class="form-group">
+       <td><label for="name">Scholar：</label></td>
+       <td><input type="text" name="sno" id="sno" placeholder="Please enter the student number"></td>
+    </div>
+    </tr>
+    <div class="form-group">
+        <label for="name">Name：</label>
+        <input type="text" name="sname" id="sname" placeholder="Please type in your name">
+    </div>
+    <div class="form-group">
+        <label for="name">gender：</label>
+       <select class="form-control" name="ssex">
+         <option>Male</option>
+         <option>Female</option>
+      </select>
+    </div>
+    <div class="form-group">
+        <label for="name">Age：</label>
+        <input type="text" name="sage" id="sge" placeholder="Please Enter Age">
+    </div>
+    <div class="form-group">
+        <label for="name">Profession：</label>
+        <SELECT name="sdept">
+            <OPTION>Computer Science and Technology</OPTION>
+            <OPTION>Network Engineering</OPTION>
+            <OPTION>Internet of Things</OPTION>
+            <OPTION>Embedded software engineering</OPTION>
+            <OPTION>Software engineering</OPTION>
+            <OPTION>Information management</OPTION>
+        </SELECT>
+    </div>
+    <div class="form-group">
+        <label for="name">Phone Number：</label>
+        <input type="text" name="sphone" id="sphone" placeholder="Please enter phone number">
+    </div>
+    <div class="form-group">
+        <label for="name">password：</label>
+        <input type="text" name="spassword" id="spassword" placeholder="Please enter your password">
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">submit</button>
+        </div>
+    </div>
+    </table>
+    </form>

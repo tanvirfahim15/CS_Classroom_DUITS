@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Dynamic Hashing</title>
+
+
+    <script>
+
+        var prefix = 0;
+        var buckets=[];
+        var hash = [0,0,0,0,0,0,0,0];
+        var postfix = [0,0,0,0,0,0,0,0];
+        var entries = [];
+        var maxBucketSize = 5;
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+            draw();
+        }
+
+        function initBuckets() {
+            buckets = [];
+            for(var i=0;i<8;i++){
+                buckets.push([]);
+            }
+        }
+
+        function draw() {
+            drawPrefixTable();
+            distribute();
+            drawTables();
+            drawGraph();
+        }
+
+        function drawPrefixTable() {
+            var table = document.getElementById("prefix-table");
+            var tableContent = "<table class=\"table table-dark\"><tr>";
+            for (var i=0;i<Math.pow(2, prefix);i++){
+                tableContent += "<td width=\"300\" align=\"center\">"+getBinary(i,prefix)+"</td>";
+            }
+            tableContent += "</tr></table>";
+            table.innerHTML = tableContent;
+        }
+
+        function getBinary(number, size) {
+            var ret = number.toString(2);
+            while(ret.length<size){
+                ret="0"+ret;
+            }
+            return ret;
+        }
+
+        function distribute() {
+            initBuckets();
+            for (var i=0;i<entries.length;i++){
+                buckets[hash[entries[i]]].push(entries[i]);
+                if(buckets[hash[entries[i]]].length>maxBucketSize){
+                    if(prefix==0){
+                        prefix=1;
+                        hash[4] = 4;
+                        hash[5] = 4;
+                        hash[6] = 4;
+                        hash[7] = 4;
+                        for(var j=0;j<postfix.length;j++){
+                            postfix[j] = 1;
+                        }
+                        return draw();
+                    }
+                    else if(prefix==1){
+                        prefix = 2;
+                        var overflowBucket = hash[entries[i]];
+                        hash[overflowBucket + 2] = overflowBucket + 2;
+                        hash[overflowBucket + 3] = overflowBucket + 2;
+                        for(var j=overflowBucket;j<overflowBucket+4;j++){
+                            postfix[j] = 2;
+                        }
+                        return draw();
+                    }
+                    else if(prefix==2){
+                        var overflowBucket = hash[entries[i]];
+                        if(postfix[overflowBucket]==1){
+                            hash[overflowBucket + 2] = overflowBucket + 2;
+                            hash[overflowBucket + 3] = overflowBucket + 2;
+                            for(var j=overflowBucket;j<overflowBucket+4;j++){
+                                postfix[j] = 2;
+                            }
+                            return draw();
+
+                        }
+                        else {
+                            prefix = 3;
+                            var overflowBucket = hash[entries[i]];
+                            hash[overflowBucket + 1] = hash[overflowBucket] + 1;
+                            postfix[overflowBucket] = 3;
+                            postfix[overflowBucket+1] = 3;
+                            return draw();
+                        }
+                    }
+                    else if(prefix==3){
+                        var overflowBucket = hash[entries[i]];
+                        if(postfix[overflowBucket]==1){
+                            hash[overflowBucket + 2] = overflowBucket + 2;
+                            hash[overflowBucket + 3] = overflowBucket + 2;
+                            for(var j=overflowBucket;j<overflowBucket+4;j++){
+                                postfix[j] = 2;
+                            }
+                            return draw();
+
+                        }
+                        else if(postfix[overflowBucket]==2){
+                            hash[overflowBucket + 1] = hash[overflowBucket] + 1;
+                            postfix[overflowBucket] = 3;
+                            postfix[overflowBucket+1] = 3;
+
+                            return draw();
+                        }
+                        else {
+                            entries.pop();
+                            return draw();
+                        }
+                    }
+
+                }
+            }
+        }
+
+        function insert(entry) {
+            entries.push(entry);
+            draw();
+        }
+
+        function drawTables() {
+            for(var i =0;i<8;i++){
+                var table = document.getElementById("t"+i.toString());
+                table.innerHTML = "";
+                var table_data="<table class=\"table table-dark\">";
+                if(buckets[i].length>0){
+
+                    for(var j=0;j<buckets[i].length;j++){
+                        table_data += "<tr><td align=\"center\">"+buckets[i][j].toString() + "</td></tr>";
+                    }
+                }
+                else{
+                    for(var j=0;j<hash.length;j++){
+                        if(hash[j]==i){
+                            table_data += "<tr><td align=\"center\">&nbsp;</td></tr>";
+                            break;
+                        }
+                    }
+                }
+                table_data += "</table>";
+                table.innerHTML = table_data;
+            }
+        }
+
+        function clearGraph() {
+            var oldCanvas = document.getElementById('graph');
+            document.getElementById('graphParent').removeChild(oldCanvas)
+
+            var canvas = document.createElement('canvas');
+            canvas.id = 'graph';
+            canvas.width =window.innerWidth *8 /10;
+            canvas.height = 200;
+            document.getElementById('graphParent').appendChild(canvas);
+        }
+
+        function drawGraph() {
+            clearGraph();
+            if(prefix==0){
+                drawLine((window.innerWidth*8/10)/2,0,getBucketPosition(0),200);
+            }
+            if(prefix==1){
+                drawLine((window.innerWidth*8/10)/4,0,getBucketPosition(0),200);
+                drawLine((window.innerWidth*8/10)*3/4,0,getBucketPosition(4),200);
+            }
+            if(prefix==2){
+                drawLine((window.innerWidth*8/10)/8,0,getBucketPosition(hash[0]),200);
+                drawLine((window.innerWidth*8/10)*3/8,0,getBucketPosition(hash[2]),200);
+                drawLine((window.innerWidth*8/10)*5/8,0,getBucketPosition(hash[4]),200);
+                drawLine((window.innerWidth*8/10)*7/8,0,getBucketPosition(hash[6]),200);
+            }
+            if(prefix==3){
+                drawLine((window.innerWidth*8/10)/16,0,getBucketPosition(hash[0]),200);
+                drawLine((window.innerWidth*8/10)*3/16,0,getBucketPosition(hash[1]),200);
+                drawLine((window.innerWidth*8/10)*5/16,0,getBucketPosition(hash[2]),200);
+                drawLine((window.innerWidth*8/10)*7/16,0,getBucketPosition(hash[3]),200);
+                drawLine((window.innerWidth*8/10)*9/16,0,getBucketPosition(hash[4]),200);
+                drawLine((window.innerWidth*8/10)*11/16,0,getBucketPosition(hash[5]),200);
+                drawLine((window.innerWidth*8/10)*13/16,0,getBucketPosition(hash[6]),200);
+                drawLine((window.innerWidth*8/10)*15/16,0,getBucketPosition(hash[7]),200);
+            }
+        }
+
+        function getBucketPosition(number) {
+            return number*((window.innerWidth*8/10)/8)+((window.innerWidth*8/10)/16);
+        }
+
+        function drawLine(x1, y1, x2, y2) {
+            var c=document.getElementById("graph");
+            var ctx=c.getContext("2d");
+            ctx.lineWidth=5;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h2>Dynamic Hashing Simulation</h2>
+        <br/>
+        <br/>
+        <div id="prefix-table">
+        </div>
+
+
+        <div align="center" id="graphParent">
+            <canvas id="graph" width="80%" height="200" style="border:1px ;"></canvas>
+        </div>
+
+        <div class="container-fluid" style="height: 300px">
+            <div class="row">
+                <div class="col" id="t0"></div>
+                <div class="col" id="t1"></div>
+                <div class="col" id="t2"></div>
+                <div class="col" id="t3"></div>
+                <div class="col" id="t4"></div>
+                <div class="col" id="t5"></div>
+                <div class="col" id="t6"></div>
+                <div class="col" id="t7"></div>
+            </div>
+        </div>
+        <button onclick="insert(0)">0</button>
+        <button onclick="insert(1)">1</button>
+        <button onclick="insert(2)">2</button>
+        <button onclick="insert(3)">3</button>
+        <button onclick="insert(4)">4</button>
+        <button onclick="insert(5)">5</button>
+        <button onclick="insert(6)">6</button>
+        <button onclick="insert(7)">7</button>
+
+
+
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

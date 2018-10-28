@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <title>CS Simulator | Home</title>
+
+
+    <script>
+        var fibArray = {{data}};
+        var N = 2;
+         window.onload = function() {
+             login();
+             drawTable();
+            document.getElementById("footer").className += " fixed-bottom";
+         };
+         function drawTable() {
+            var tableHeader = document.getElementById("tableHeader");
+            tableHeader.innerHTML = "";
+            tableHeader.innerHTML = "<tr>";
+            tableHeader.innerHTML += "<td align='center'><b>";
+            tableHeader.innerHTML += "Current State of N = ";
+            tableHeader.innerHTML += parseFloat(N).toFixed(0);
+            tableHeader.innerHTML += "</b></td>";
+            tableHeader.innerHTML += "<td align='center'><b>";
+            tableHeader.innerHTML += "Fibonacci(";
+            tableHeader.innerHTML += parseFloat(N).toFixed(0);
+            tableHeader.innerHTML += ") = ";
+            tableHeader.innerHTML += parseFloat(fibArray[N - 1]).toFixed(0);
+            if(N == 2) tableHeader.innerHTML += " (Base Case) ";
+            tableHeader.innerHTML += "</b></td>"
+            tableHeader.innerHTML +="</tr>";
+            var table = document.getElementById("tableFib");
+            table.innerHTML="";
+            table.innerHTML += "<tr>";
+            for(var ind = 0; ind < N; ind++) {
+                var tdata;
+                if((ind == N-2 || ind == N - 3) && N > 2) tdata = "<td align='center' style='color: chartreuse'><b>";
+                else if(ind == N - 1 && N > 2) tdata = "<td align='center' style='color: crimson'><b>";
+                else tdata = "<td align='center' style='color: black'><b>";
+                tdata += parseFloat(fibArray[ind]).toFixed(0);
+                tdata += "</b></td>";
+                table.innerHTML += tdata;
+            }
+            table.innerHTML += "</tr>";
+            var tableAlgo = document.getElementById("algorithm");
+            tableAlgo.innerHTML = "";
+            if(N == 2) {
+                tableAlgo.innerHTML += "<tr>";
+                tableAlgo.innerHTML += "<td class='text-center'>";
+                tableAlgo.innerHTML += "Base Case, where f[0] = 0 & f[1] = 1";
+                tableAlgo.innerHTML += "</td>";
+                tableAlgo.innerHTML += "</tr>";
+            }
+            else {
+                tableAlgo.innerHTML += "<tr>";
+                tableAlgo.innerHTML += "<td align='center' style='vertical-align: middle'>";
+                tableAlgo.innerHTML += "Here we consider f[ ] = Fibonacci Araay";
+                tableAlgo.innerHTML += "</td>";
+                tableAlgo.innerHTML += "<tr>";
+                tableAlgo.innerHTML += "<tr>";
+                tableAlgo.innerHTML += "<td align='center' style='vertical-align: middle'>";
+                tableAlgo.innerHTML += "1. Step 1:  Value of f[n-1] is: ";
+                tableAlgo.innerHTML += parseFloat(fibArray[N-2]).toFixed(0);
+                tableAlgo.innerHTML += "</td>";
+                tableAlgo.innerHTML += "<tr>";
+                tableAlgo.innerHTML += "<tr>";
+                tableAlgo.innerHTML += "<td align='center' style='vertical-align: middle'>";
+                tableAlgo.innerHTML += "2. Step 2:  Value of f[n-2] is: ";
+                tableAlgo.innerHTML += parseFloat(fibArray[N-3]).toFixed(0);
+                tableAlgo.innerHTML += "</td>";
+                tableAlgo.innerHTML += "<tr>";
+                tableAlgo.innerHTML += "<tr>";
+                tableAlgo.innerHTML += "<td align='center' style='vertical-align: middle'>";
+                tableAlgo.innerHTML += "3. Step 3:  Add the values of f[n-1] and f[n-2] and place the result in f[n] = ";
+                tableAlgo.innerHTML += parseFloat(fibArray[N-1]).toFixed(0);
+                tableAlgo.innerHTML += "</td>";
+                tableAlgo.innerHTML += "<tr>";
+            }
+        };
+        function runForward() {
+            if(true){
+                N++;
+                if(N > 23) N = 23;
+                drawTable();
+            }
+        }
+        function runBackward() {
+            if(true){
+                N--;
+                if(N < 2) N = 2;
+                drawTable();
+            }
+        }
+        function processKey(event) {
+            var key = event.keyCode;
+            if(key==39||key==32) {
+                runForward();
+            }
+            else if(key==37) {
+                runBackward();
+            }
+        }
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+   <div align="center" style="vertical-align: middle">
+       <br/><br/><br/>
+
+       <table class="table table-dark table-striped" style="width: 80%" >
+           <tr id="tableHeader">
+           </tr>
+       </table>
+
+       <table class="table table-white table-striped" style="width: 80%" >
+            <tr id="tableFib">
+            </tr>
+        </table>
+
+
+       <br/>
+        <div align="center">
+            <button type="button" class="btn btn-dark" onclick="runBackward()">Run Backward</button>
+            <button type="button" class="btn btn-dark" onclick="runForward()">Run Forward</button>
+        </div>
+       <br/><br/>
+
+       <div>
+       <table class="table table-dark table-striped" style="width: 60%" id="algorithm", align="center">
+
+       </table><br/></div>
+
+   </div>
+
+</body>
+
+</html>

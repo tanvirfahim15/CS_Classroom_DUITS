@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>K Means Clustering Simulation</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+    <script>
+        var data = {{data|tojson}};
+        var iter = 0;
+        var maxiter = data['costs'].length;
+        var colors = ['blue', 'green', 'black', 'aqua', 'Coral', 'indigo', 'SaddleBrown']
+
+        console.log(data);
+        window.onload=function () {
+            login();
+            //document.getElementById("footer").className += " fixed-bottom";
+            drawGraph(iter);
+            drawCostGraph(iter);
+            loadSavedState();
+        };
+
+        window.onkeydown = function (event) {
+            processKey(event);
+        };
+
+        function getX() {
+            var x = [];
+            for(var i=0;i<data['points'].length;i++){
+                x.push(data['points'][i][0]);
+            }
+            return x;
+        }
+
+        function getY() {
+            var y = [];
+            for(var i=0;i<data['points'].length;i++){
+                y.push(data['points'][i][1]);
+            }
+            return y;
+        }
+
+
+        function getCentroidX(iter) {
+            var x = [];
+            for(var i=0;i<data['centroids'][iter].length;i++){
+                x.push(data['centroids'][iter][i][0]);
+            }
+            return x;
+        }
+
+        function getCentroidY(iter) {
+            var y = [];
+            for(var i=0;i<data['centroids'][iter].length;i++){
+                y.push(data['centroids'][iter][i][1]);
+            }
+            return y;
+        }
+
+        function getCentroidColor() {
+            var color = [];
+            for(var i=0;i<data['centroids'].length;i++){
+                color.push(colors[i%7]);
+            }
+            return color;
+
+        }
+
+        function getColor(iter) {
+            var color = [];
+            for(var i=0;i<data['clusters'][0].length;i++){
+                color.push(colors[(data['clusters'][iter][i])%7]);
+            }
+            return color;
+        }
+
+        function getCurrentCost(iter) {
+            return data['costs'][iter];
+        }
+
+        function drawGraph(iter) {
+            var trace1 = {
+                x: getX(),
+                y: getY(),
+                mode: 'markers',
+                marker: {
+                    color: getColor(iter),
+                    size: 6
+                },
+                name: 'Points'
+            };
+
+            var trace2 = {
+                x: getCentroidX(iter),
+                y: getCentroidY(iter),
+                mode: 'markers',
+
+                marker: {
+                    color: getCentroidColor(),
+                    size: 15,
+                    line: {
+                        color: 'rgb(0, 0, 0)',
+                        width: 2
+                    }
+                },
+                name: 'Centroids'
+            };
+
+
+
+            var data = [ trace1, trace2 ];
+
+            var layout = {
+
+                title:'Data points and Centroids'
+            };
+
+            Plotly.newPlot('graph', data, layout,{ displaylogo : false });
+        }
+
+        function getCosts() {
+            costs = [];
+            for (var i=0;i<data['costs'].length;i++){
+                costs.push(data['costs'][i]);
+            }
+            return costs;
+        }
+
+
+
+        function drawCostGraph(iter) {
+            var trace1 = {
+                y: getCosts(),
+                mode: 'lines',
+                marker: {
+                    color: 'red',
+                    size: 6
+                },
+                name: 'Cost'
+            };
+
+            var trace2 = {
+                x: [iter],
+                y: [getCurrentCost(iter)],
+                mode: 'markers',
+                marker: {
+                    color: 'blue',
+                    size: 12
+                },
+                name: 'Current Cost'
+            };
+
+
+
+            var data = [ trace1, trace2];
+
+            var layout = {
+                title:'Cost Chart'
+            };
+
+            Plotly.newPlot('cost_graph', data, layout,{ displaylogo : false });
+        }
+        function highlight(id){
+            $(id).animate({
+               opacity:0.5
+            }, 500 ,"linear",function(){
+                $(this).animate({ opacity:1},500);
+            });
+        }
+
+
+        function processKey(event) {
+
+            var key = event.keyCode;
+            if(key==39||key==32) {
+                runForward();
+            }
+            else if(key==37) {
+                runBackward();
+            }
+        }
+        function runForward() {
+            if(iter==maxiter-1)
+                return;
+            iter++;
+            if(iter%2==1){
+                highlight("#update-cluster");
+                highlight("#cluster");
+            }
+            else{
+                highlight("#update-centroids");
+                highlight("#centroids");
+
+            }
+            drawGraph(iter);
+            drawCostGraph(iter);
+        }
+        function runBackward() {
+            if(iter==0)
+                return;
+            iter--;
+            drawGraph(iter);
+            drawCostGraph(iter);
+        }
+
+
+
+        function save() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=ml&algo=km&algo_id={{name}}&username="+data_login['username']);
+        }
+
+
+        function remove() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=ml&algo=km&algo_id={{name}}&username="+data_login['username']);
+        }
+
+        function loadSavedState() {
+            var saved = {{saved}}
+                console.log(saved);
+            if (saved == 1){
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h2>K-Means Clustering</h2>
+        <button type="button" class="btn btn-dark " onclick="runBackward()" style="width: 150px">Run Backward</button>
+        <button type="button" class="btn btn-dark " onclick="runForward()" style="width: 150px">Run Forward</button>
+        <a href="/simulation/ml/k-means-clustering/entry">
+            <button type="button" class="btn btn-dark ">Create Simulation</button>
+        </a>
+        <button type="button" class="btn btn-success " id="save" onclick="save()" style="width: 150px">Save</button>
+<br/>
+<br/>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-7">
+                    <div id="graph" style="height: 600px"></div><hr/>
+                    <div id="cost_graph"></div>
+                </div>
+                <div class="col-sm-5">
+                    <div style="background: #2d2d2d">
+                    <span style="color: #dd711d;font-size:large;font-weight: bold">Algorithm
+                        </span></div>
+                    <div align="left">
+                        <pre><code class="language-python" >m = number of clusters
+n = number of points
+Centroids = {c1,c2,...,cm}
+Points = {p1,p2,......,pn}
+Cluster = []</code></pre>
+                        <pre><code class="language-python" >def distance(p1, p2):
+    return sqrt{(p1.x-p2.x)-(p1.y-p2.y)}</code></pre>
+
+                        <div id="update-cluster">
+
+                            <pre><code class="language-python" >def update_cluster():
+    for p in Points:
+        for c in Centroids:
+            if distance(p,c)< distance(p,Cluster[p]):
+                Cluster[p] = c
+</code></pre>
+                        </div>
+                        <div id="update-centroids">
+                            <pre><code class="language-python" >def update_centroids():
+    for c in Centroids:
+        temp = list()
+        for p in Points:
+            if Cluster[p] == c :
+                temp.insert(p)
+        c = average(temp)</code></pre>
+                        </div>
+                        <pre><code class="language-python" >def Cost():
+    cost = 0
+    for p in points:
+        cost += distance(p, cluster[p])
+    return cost</code></pre>
+                        <pre><code class="language-python" >for i in range(m):
+    Centroids[i] = random point
+for i in range(n):
+    Cluster[i] = Centroids[0]
+While (centroids are changing){
+    update_cluster()
+    update_centroids()
+}</code></pre>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+    </div>
+</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

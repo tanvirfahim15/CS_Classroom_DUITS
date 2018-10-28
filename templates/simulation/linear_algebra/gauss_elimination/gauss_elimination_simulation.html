@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Gauss Elimination Simulation</title>
+
+
+    <script>
+        var matrices;
+        var records;
+        var iter=0;
+        var maxiter;
+        var rowWidth;
+        window.onload = function() {
+            loadData();
+            login();
+            loadSavedState();
+        };
+
+        window.onkeydown = function (event) {
+            processKey(event);
+        };
+
+        function loadData() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var data = this.responseText.split("\'").join( "\"");
+                    data = JSON.parse(data);
+                    console.log(data);
+                    matrices = data[0];
+                    records = data[1];
+                    maxiter = records.length;
+                    rowWidth = screen.width * 8 /10;
+                    rowWidth /= maxiter;
+                    drawTable();
+                }
+            };
+
+            xhttp.open("GET", "/simulation/la/gauss-elimination/{{name}}/data", true);
+            xhttp.send();
+        }
+
+        function drawTable() {
+            var table = document.getElementById("table");
+            table.innerHTML="";
+            var mat = matrices[iter];
+            for (var row = 0; row < mat.length; row++) {
+                var trow = "<tr>";
+                for(var col=0; col<mat[row].length; col++){
+                    trow += "<td align='center' width='" + rowWidth + "'><b>" + parseFloat(mat[row][col]).toFixed(3) + "</b></td>";
+                }
+                trow += "</tr>";
+                table.innerHTML += trow;
+            }
+            var record = "<tr><td align='left'>Current: "+records[iter]+"</td>";
+            if(iter < maxiter-1) {
+                record += "<td align='right'>Next: " + records[iter+1] + "</td>";
+            }
+            record += "</tr>";
+            document.getElementById("record").innerHTML = record;
+        };
+
+        function runForward() {
+            if(iter < maxiter-1){
+                iter+=1;
+                drawTable();
+            }
+        }
+
+        function runBackward() {
+            if(iter > 0){
+                iter-=1;
+                drawTable();
+            }
+        }
+
+        function processKey(event) {
+
+            var key = event.keyCode;
+            if(key==39||key==32) {
+                runForward();
+            }
+            else if(key==37) {
+                runBackward();
+            }
+        }
+
+        function save() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=la&algo=gs&algo_id={{name}}&username="+data_login['username']);
+        }
+
+
+        function remove() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=la&algo=gs&algo_id={{name}}&username="+data_login['username']);
+        }
+
+        function loadSavedState() {
+            var saved = {{saved}}
+            console.log(saved);
+            if (saved == 1){
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body style="
+  height: auto;
+  min-height: 100%">
+<div align="center" style="vertical-align: middle">
+    <h2 align="center">Gauss Elimination Simulation</h2>
+    <br/>
+    <div align="center">
+        <button type="button" class="btn btn-dark" onclick="runBackward()" style="width: 150px">Run Backward</button>
+        <button type="button" class="btn btn-dark" onclick="runForward()" style="width: 150px">Run Forward</button>
+        <button type="button" class="btn btn-success" id="save" onclick="save()" style="width: 150px">Save</button>
+
+    </div><br/><br/>
+
+    <table class="table table-dark" style="width: 80%">
+        <thead id="record">
+        </thead>
+    </table>
+    <table class="table  table-striped" style="width: 80%">
+        <tbody id="table">
+        </tbody>
+    </table>
+    <br/><br/><br/>
+    <table class="table table-dark table-striped" style="width: 80%">
+        <thead>
+        <tr>
+            <th>Elementary Row Operations</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1. Interchange two rows.</td>
+        </tr>
+        <tr>
+            <td>2. Multiply a row by a nonzero constant.</td>
+        </tr>
+        <tr>
+            <td>3. Add a multiple of a row to another row.</td>
+        </tr>
+        </tbody>
+    </table>
+    <br/><br/>
+
+    <a href="/simulation/la/gauss-elimination/entry">
+        <button type="button" class="btn btn-dark btn-lg">Create Simulation</button>
+    </a>
+
+    <br/><br/>
+    <br/><br/>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

@@ -1,0 +1,67 @@
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+<style>
+    .output {
+    font: 1rem 'Fira Sans', sans-serif;
+}
+
+legend {
+    background-color: rgba(0, 0, 0, 0.92);
+    color: #fff;
+    padding: 3px 6px;
+}
+.control {
+    margin: 1rem 0;
+}
+input[type=text], select {
+    text-align: center;
+}
+label {
+    display: inline-block;
+    text-align: right;
+    font-size: .8rem;
+}
+
+.hours {
+    font-size: .7em;
+    color: #999;
+}
+form {
+  text-align: center;
+}
+</style>
+
+<script type=text/javascript>
+  $(function() {
+    $('#button').bind('click', function() {
+      $.getJSON('/add_class', {
+        starttime: String(document.getElementById("appt-time").value),
+        endtime: String(document.getElementById("endtime").value),
+        details:String(document.getElementById("details").value)
+      }, function(data) {
+            $("#result").text(data.result);
+      });
+      return false;
+    });
+  });
+</script>
+{% extends '/tutorial/layout.html' %}
+
+{% block body %}
+    <a class="btn btn-success" href="{{ url_for('classroom_feed.show_news_feed') }}">back</a>
+    <br/>
+    <div class="jumbotron text-center">
+        <h3>Class Details</h3>
+        <input type="text" id="details" >
+        <br>
+        <h4>Start Time</h4>
+        <input type="time" id="appt-time"/>
+        <h4>End Time</h4>
+        <input type="time" id="endtime"/>
+        <br>
+        <br>
+        <a class="btn btn-success" id="button" >Submit</a>
+        <br>
+        <br>
+        <span id=result style="background-color: #3bdd79" ></span>
+    </div>
+{% endblock %}

@@ -1,0 +1,54 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+  </head>
+  
+  <body bgcolor="#8dd8f8">
+{#    <form name="formselstu" action="{{ url_for('admin_stu_selrs') }}" method="post"><div align="center">#}
+{#    <font color="#0000a0" face="华文楷体"><strong><font size="5">Query student information<br><br><br></font></strong></font></div>#}
+{#    <table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">#}
+{#    <tr><th colspan="2" height="15"><font size="4">Query condition (approximate query)</font></th></tr>#}
+{#    <tr><td height="25">Please enter the student ID number：</td><td><input type="text" name="sno"/></td></tr>#}
+{#    <tr><td height="25">Please enter the name of the student：</td><td><input type="text" name="sname"/></td></tr>#}
+{#    <tr><td height="25">Please enter the query student professional：</td><td><input type="text" name="sdept"/></td></tr>#}
+{#    <tr><td height="20"><input type="reset" value="重  置"/></td><td><input type="submit" value="提  交"/></td></tr>#}
+{##}
+{##}
+{##}
+{#    </table>#}
+{##}
+{#    </form>#}
+
+
+ <div align="center"><strong><font color="#000080" size="5" face="华文楷体">Query student information<br><br><br></font></strong></div>
+
+       <table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">
+
+       <tr><td height="25">Student id</td>
+                <td height="25">Student name</td>
+                <td height="25">Department name</td>
+                <td height="25">phone no</td>
+            </tr>
+
+         {% for cno, cname , cdept, cphone in student_data%}
+
+
+            <tr><td height="25">{{ cno }}</td>
+                <td height="25">{{ cname}}</td>
+                <td height="25">{{ cdept }}</td>
+                <td height="25">{{ cphone }}</td>
+            </tr>
+{#             <tr>{{ cname}}</tr>#}
+{#             <br>#}
+
+         {% endfor %}
+
+        </table>
+
+  </body>
+</html>

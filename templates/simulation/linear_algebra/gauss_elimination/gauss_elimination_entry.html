@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Create Gauss Elimination Simulation</title>
+
+
+    <script>
+
+        window.onload = function() {
+            var data = {{data|tojson}};
+            if (data != null){
+                document.getElementById('msg').innerHTML='<h4 style="color: red">Wrong Format</h4>'
+            }
+            document.getElementById("data_area").innerText=data;
+
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+
+        };
+
+        function randomInput() {
+            var col=Math.floor(Math.random() * 10)%5+2;
+            var row=Math.floor(Math.random() * 10)%5+2;
+            var matrix="";
+            for(var i=0;i<row;i++){
+                if(i!=0)
+                    matrix+='\n';
+                for(var j=0;j<col;j++){
+                    if(j!=0)
+                        matrix+= " ";
+                    matrix+= Math.floor(Math.random() * 10);
+                }
+            }
+            document.getElementById("data_area").innerText=matrix;
+
+        }
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center"><div  style="width: 80%">
+    <h2>Gauss Elimination Entry</h2>
+    <br/>
+    <table class="table table-dark">
+        <thead>
+        <td id="msg"><h4>Input Matrix</h4></td>
+        <td align="right">
+            <button class="btn btn-success" onclick="randomInput()">Random Input</button>
+        </td>
+        </thead>
+    </table>
+
+    <form action = "/simulation/la/gauss-elimination/entry_data" method = "POST">
+        <div class="form-group">
+            <textarea class="form-control" rows="10" id="data_area" name="entry"></textarea>
+        </div>
+        <div class="form-group" align="left">
+            <input type="submit" class="btn btn-dark btn-lg" value="Submit">
+        </div>
+    </form>
+    <br/>
+    <h5 align="left">Sample:</h5>
+    <p align="left">
+        1 2 3 4 5<br/>
+        2 3 4 6 4<br/>
+        8 6 4 3 2<br/>
+    </p>
+</div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

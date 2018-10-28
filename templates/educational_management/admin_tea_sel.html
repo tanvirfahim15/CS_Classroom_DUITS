@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+  </head>
+  
+  <body bgcolor="#8dd8f8">
+  <div align="center"><strong><font color="#000080" size="5" face="华文楷体">Query teacher information<br><br><br></font></strong></div>
+{#  <form/ name="formdeltea" action="{{ url_for('admin_tea_selrs') }}" method="post" onsubmit="return isValid(this);"><div align="center"> #}
+{#    </div><table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">#}
+{#     <tr><th colspan="2" height="25"><font size="4">Query condition (approximate query)</font></th></tr>#}
+{#    <tr><td height="20" align="center">Teacher's job number：</td><td align="center"><input type="text" name="tno"/></td></tr>#}
+{#    <tr><td height="20" align="center">Teacher's name：</td><td align="center"><input type="text" name="tname"/>#}
+{#    <input type="hidden" name="action" value="select"></td></tr>#}
+{#    <tr><td height="20" align="center"><input type="reset" value="重 置"/></td><td align="center"><input type="submit" value="提 交"/></td></tr>#}
+{#    </table>#}
+{#    </form>#}
+
+
+       <table class="table1" border="1" width="600" align="center" cellspacing="0" cellpadding="0">
+
+       <tr><td height="25">Teacher id</td>
+                <td height="25">Teacher name</td>
+                <td height="25">phone no</td>
+            </tr>
+
+         {% for cno, cname , cphone in teacher_data%}
+
+
+            <tr><td height="25">{{ cno }}</td>
+                <td height="25">{{ cname}}</td>
+                <td height="25">{{ cphone }}</td>
+            </tr>
+{#             <tr>{{ cname}}</tr>#}
+{#             <br>#}
+
+         {% endfor %}
+
+        </table>
+
+  </body>
+</html>

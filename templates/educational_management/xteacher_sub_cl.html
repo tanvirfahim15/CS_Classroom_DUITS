@@ -1,0 +1,57 @@
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title></title>
+<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+
+  </head>
+  
+  <body bgcolor="#8dd8f8">
+{% if cstatus == 'subed' %}
+  <div align="center"><font size="5" color="#000080" face="华文楷体"><b>The submitted course information is as follows：<br><br></b></font></div>
+     <table class="table1" border="1" cellspacing="0" cellpadding="0" align="center">
+     
+     <tr align="center"><td width="150">Course number</td><td width="150">course name</td><td>Import the grade Excel sheet again</td></tr>
+  {% if data : %}
+  		{% for cou in data : %}
+
+            	<tr align="center">
+		    		<td>{{ cou[0] }}</td>
+		    		<td>{{ cou[1] }}</td>
+            <td><form name="{{ cou[0] }}" action="{{ url_for('teacher_sub_score',cno=cou[0]) }}" method="post" enctype="multipart/form-data"><input type="file" name="{{ cou[0] }}"><input type="submit" name="再次提交"></form>
+				</tr>
+		{% endfor %}
+	{% else : %}
+	<tr><th colspan="10">No course information！</th></tr>
+	{% endif %}
+	</table>
+{% else :%}
+
+   <div align="center"><font size="5" color="#000080" face="华文楷体"><b>Unsubmitted course information is as follows：<br><br></b></font></div>
+     <table class="table1" border="1" cellspacing="0" cellpadding="0" align="center">
+     
+     <tr align="center"><td width="150">Course number</td><td width="150">course name</td><td>Import grade Excel table</td></tr>
+
+   {% if data : %}
+
+   		{% for cou in data : %}
+            	<tr align="center">
+		    		<td>{{ cou[0] }}</td>
+		    		<td>{{ cou[1] }}</td>
+		    		<td><form name="{{ cou[0] }}" action="{{ url_for('teacher_sub_score',cno=cou[0]) }}" method="post" enctype="multipart/form-data"><input type="file" name="{{ cou[0] }}"><input type="submit" name="submit"></form>
+
+		    		</td>
+   				</tr>
+		{% endfor %}
+	{% else :%}
+	<tr><th colspan="10">No course information！</th></tr>
+
+</table>
+
+	{% endif %}
+ {% endif %}
+  </body>
+</html>

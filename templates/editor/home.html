@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset ="utf-8">
+  <title>ONLINE IDE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script>
+
+        window.onload=function () {
+            login();
+        }
+
+   </script>
+
+  {% include "nav.html" %}
+</head>
+<body style="background: #F5F5F5;">
+  <br>
+  {% with messages = get_flashed_messages() %}
+   {% if messages %}
+         {% for message in messages %}
+         <div class="alert" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+          <strong>{{message}}</strong>
+        </div>
+         {% endfor %}
+   {% endif %}
+  {% endwith %}
+
+  <div >
+    <form action="/online_ide/" enctype="multipart/form-data" style="margin-left: 20px" method="POST" autocomplete="off">
+      <label for="lang"><strong><h5>Select Language:</h5></strong></label>
+      <select name="lang" id="lang">
+        <option value="-1">Select language...</option>
+        {% for lang in languages.keys() %}
+          <option value="{{languages[lang]}}">{{lang.capitalize()}}</option>
+        {% endfor %}
+      </select>
+      <br/>
+      <label for="code"><strong><h5>Code:</h5></strong></label>
+      <br/>
+      <textarea cols="60" rows="20" name="code" id="code" style="width: 80%; height: 60%; display: inline;border-color: black; font-size: 15px;font-family: consolas;" wrap="off"></textarea>
+      <br/>
+      <label for="testcase"><strong><h5>Input:</h5></strong></label>
+      <br/>
+      <textarea cols="30" rows="7" name="testcase" id="testcase" style="width: 40%; height: 30%; display: inline; background: black; color:white;border-color: black;font-size: 15px;font-family: consolas" wrap="off"></textarea><br/>
+      <br><button type="submit" class="btn btn-success">Compile and Run</button><br/><br/>
+    </form>
+  </div>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script>
+        function enableTab(id) {
+    var el = document.getElementById(id);
+    el.onkeydown = function(e) {
+        if (e.keyCode === 9) {
+
+            var val = this.value,
+                start = this.selectionStart,
+                end = this.selectionEnd;
+
+            this.value = val.substring(0, start) + '\t' + val.substring(end);
+
+            this.selectionStart = this.selectionEnd = start + 1;
+
+            return false;
+
+        }
+    };
+}
+
+enableTab('code');
+    </script>
+<style>
+    * {margin:0;padding:0}
+body {padding:50px}
+textarea {width:100%;height:150px;margin:10px 0}
+</style>
+</body>
+</html>

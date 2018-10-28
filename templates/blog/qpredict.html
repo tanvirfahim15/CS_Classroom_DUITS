@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>QPredict</title>
+
+
+    <script>
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        }
+
+
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h1>Qpredict</h1>
+
+                {% for item in questions %}
+                    <div align="left">
+                        {{item[0]}}<br/>
+                        <b>Ans. </b>{{item[1]}}<br/>
+                    </div>
+                    <br/>
+                    <hr/>
+
+                {% endfor %}
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

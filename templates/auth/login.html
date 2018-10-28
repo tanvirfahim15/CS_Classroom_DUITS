@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Login</title>
+
+
+    <script>
+
+        window.onload=function () {
+            display_error();
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        }
+
+        var data = {{data|tojson}};
+        console.log(data);
+
+        function display_error() {
+            if(data != null) {
+                if (data['username_msg'] != null)
+                    document.getElementById('username_msg').innerText = data['username_msg'];
+                if (data['password_msg'] != null)
+                    document.getElementById('password_msg').innerText = data['password_msg']
+                 if(data['username']!=null)
+                    document.getElementById('username').value = data['username'];
+            }
+        }
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <br/>
+        <h2>Log In</h2>
+        <br/>
+
+        <form action = "/auth/login-validation" method = "POST" style="width: 30%">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username">
+                <span id="username_msg" style="font-size: small;color: red"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password">
+                <span id="password_msg" style="font-size: small;color: red"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-dark btn-lg" value="Log In">
+            </div>
+        </form>
+        <a href="/auth/register">Register</a>
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Machine Learning Simulation</title>
+
+
+    <script>
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        }
+
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <br/>
+        <br/>
+        <a href="/simulation/la/gauss-elimination/">Gauss Elimination</a>
+        <br/>
+        <a href="/simulation/la/gauss-jordan-elimination/">Gauss Jordan Elimination</a>
+        <br/>
+        <a href="/simulation/la/eigen-value/">Eigen Value</a>
+        <br/>
+
+        <br/>
+        <br/>
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

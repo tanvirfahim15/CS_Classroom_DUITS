@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Coin Change Variant-5 Simulation</title>
+
+    <script>
+        var data = {{data|tojson}};
+        var dpMatrix = data[0];
+        var coinArray = data[1];
+        var pathArray = data[2];
+        var changeValue = data[3];
+        var coinArrayLenth = data[4];
+        var currentRow = 1;
+        var currentColumn = 1;
+        console.log(data);
+
+        var rowWidth = screen.width * 8 / 10;
+        rowWidth /= (coinArrayLenth + 2);
+
+        window.onload = function () {
+            drawTable(currentRow, currentColumn);
+            login();
+            loadSavedState();
+
+            // document.getElementById("footer").className += " fixed-bottom";
+
+        };
+
+
+        window.onkeydown = function (event) {
+            processKey(event);
+        };
+
+        function drawTable(row, column) {
+            if (pathArray[row][column] == 1) {
+                document.getElementById("pseudocode1").innerHTML = "<span style='color: #ff4c00'>dp_matrix[j][i]</span> " +
+                    "= <span style='color: #3bdd79'>dp_matrix[j][i- coin[j]]</span> + 1";
+                document.getElementById("pseudocode2").innerHTML = "dp_matrix[j][i] = dp_matrix[j-1][i - coin[j]]+1";
+            }
+            else if (pathArray[row][column] == 2) {
+                document.getElementById("pseudocode1").innerHTML = "dp_matrix[j][i] =  dp_matrix[j][i-coin[j]] + 1";
+                document.getElementById("pseudocode2").innerHTML = "<span style='color: #ff4c00'>length_dp[i][j]</span>" +
+                    " = <span style='color: #3bdd79'>dp_matrix[j-1][i - coin[j]] </span>, <span style='color: #bbbb79'> + 1 </span>";
+
+            }
+            else {
+                document.getElementById("pseudocode1").innerHTML = "dp_matrix[j][i] =  dp_matrix[j][i-coin[j]] + 1";
+                document.getElementById("pseudocode2").innerHTML = "dp_matrix[j][i] = dp_matrix[j-1][i - coin[j]]+1";
+            }
+            var lTable = document.getElementById("dpMatrix");
+            var lTableContent = "<tr>";
+            lTableContent += "<td width='" + rowWidth + "' align='center'>" + '#' + "</td>";
+            for (var k = 0; k <= changeValue; k++) {
+                lTableContent += "<td width='" + rowWidth + "' align='center'>" + k + "</td>";
+            }
+            lTableContent += "</tr>";
+
+            lTableContent += "<tr>";
+            lTableContent += "<td width='" + rowWidth + "' align='center'>" + 0 + "</td>";
+            lTableContent += "<td width='" + rowWidth + "' align='center'>" + 0 + "</td>"
+            for (var k = 1; k <= changeValue; k++) {
+                lTableContent += "<td width='" + rowWidth + "' align='center'>" + 'INF' + "</td>";
+            }
+            lTableContent += "</tr>";
+
+            for (var k = 1; k <= coinArrayLenth; k++) {
+                lTableContent += "<tr>";
+                lTableContent += "<td width='" + rowWidth + "' align='center'>" + coinArray[k] + "</td>";
+                lTableContent += "<td width='" + rowWidth + "' align='center'>" + 0 + "</td>";
+                for (var l = 1; l <= changeValue; l++) {
+                    if (k > row || (k == row && l > column))
+                        lTableContent += "<td width='" + rowWidth + "' align='center'></td>";
+                    else if (k == row && l == column)
+                        lTableContent += "<td width='" + rowWidth + "' align='center' style='color: #ff4c00'>" + dpMatrix[k][l] + "</td>";
+                    else if (k == row - 1 && l == column - coinArray[k])
+                        lTableContent += "<td width='" + rowWidth + "' align='center' style='color: #3bdd79'>" + dpMatrix[k][l] + "</td>";
+                    else if (k == row && l == column - coinArray[k])
+                        lTableContent += "<td width='" + rowWidth + "' align='center' style='color: #3bdd79'>" + dpMatrix[k][l] + "</td>";
+                    else
+                        lTableContent += "<td width='" + rowWidth + "' align='center'>" + dpMatrix[k][l] + "</td>";
+
+                }
+                lTableContent += "</tr>";
+            }
+            lTable.innerHTML = lTableContent;
+        }
+
+        function processKey(event) {
+
+            var key = event.keyCode;
+            if (key == 39) {
+                runForward();
+            }
+            else if (key == 37) {
+                runBackward();
+            }
+        }
+
+        function runForward() {
+            if (currentRow > coinArrayLenth)
+                return;
+            if (currentRow == coinArrayLenth && currentColumn == changeValue)
+                return;
+            currentColumn++;
+            if (currentColumn > changeValue && currentRow < coinArrayLenth) {
+                currentColumn = 1;
+                currentRow++;
+            }
+            drawTable(currentRow, currentColumn);
+        }
+
+        function runBackward() {
+            if (currentRow == 1 && currentColumn == 1)
+                return;
+            currentColumn--;
+            if (currentColumn == 0) {
+                currentColumn = changeValue;
+                currentRow--;
+            }
+            drawTable(currentRow, currentColumn);
+        }
+
+        function save() {
+            if (data_login['username'] == null) {
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=lcs&algo_id={{name}}&username=" + data_login['username']);
+        }
+
+
+        function remove() {
+            if (data_login['username'] == null) {
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=lcs&algo_id={{name}}&username=" + data_login['username']);
+        }
+
+        function loadSavedState() {
+            var saved = {{saved}}
+                console.log(saved);
+            if (saved == 1) {
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+
+        <h2 align="center">Coin Change Variant-5 Simulation</h2>
+
+        <button type="button" class="btn btn-dark" onclick="runBackward()" style="width: 150px">Run Backward</button>
+        <button type="button" class="btn btn-dark" onclick="runForward()" style="width: 150px">Run Forward</button>
+        <button type="button" class="btn btn-success" id="save" onclick="save()" style="width: 150px">Save</button>
+
+        <br/>
+        <br/>
+
+
+        <table class="table table-dark table-striped table-bordered" style="width: 80%;">
+            <thead class="thead-dark">
+            <th>
+                DP Matrix
+            </th>
+            </thead>
+            <tbody id="dpMatrix" style="font-weight: bold;font-size: large">
+            </tbody>
+        </table>
+        <br/>
+        <br/>
+        <div align="left" class="table-dark" style="width: 80%">
+            <br/>
+            <div style="margin-left: 30px;">
+                <code style="color: white;font-weight: bold;">
+                    Pseudocode:<br/><br/>
+                    for i = 1 to change_value:<br/>
+                    for j = 1 to coin_array_length:<br/>
+                    &emsp;&emsp;&emsp;&emsp; if dp_matrix[j-1][i - coin[j] > dp_matrix[j][i-coin[j]]:<br/>
+                    <span id="pseudocode1"> dp_matrix[j][i] = dp_matrix[j][i-coin[j]] + 1</span><br/>
+                    &emsp;&emsp;&emsp;&emsp;else:<br/>
+                    &emsp;&emsp;&emsp;&emsp;&emsp;<span
+                        id="pseudocode2">dp_matrix[j][i] = dp_matrix[j-1][i - coin[j]]+1</span><br/><br/>
+                </code>
+            </div>
+
+        </div>
+        <br/>
+        <a href="/idp/coin-change-variant-5/entry">
+            <button type="button" class="btn btn-dark btn-lg">Create Simulation</button>
+        </a>
+        <br/>
+        <br/>
+
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

@@ -1,0 +1,11 @@
+{% extends 'OnlineClassroom/post_and_comment/feed_layout.html' %}
+{% block body %}
+        <div class="row">
+            {% include "OnlineClassroom/post_and_comment/me_and_others.html" %}
+
+            <div class="col-md-6 gedf-main">
+                {% include "OnlineClassroom/post_and_comment/post_with_comments.html" %}
+            </div>
+            {% include "OnlineClassroom/post_and_comment/assignments_and_tutorial.html" %}
+        </div>
+{% endblock %}

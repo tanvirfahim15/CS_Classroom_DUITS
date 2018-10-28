@@ -1,0 +1,137 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<link href="/static/CSS/prism.css" rel="stylesheet" />
+<script src="/static/Js/prism.js"></script>
+<script>
+
+    var data_login = {{session | tojson}}
+
+    function login() {
+        var username = data_login['username']
+        if (username != null) {
+            document.getElementById('username_nav').innerText = username;
+            document.getElementById('username_nav').href = '/profile/' + username;
+            document.getElementById('loginState').href = '/auth/logout';
+            document.getElementById('loginButton').innerText = 'Log Out';
+        }
+    }
+</script>
+<style>
+
+    a.black-background:link {
+        color: #3bdd79;
+    }
+
+    /* visited link */
+    a.black-background:visited {
+        color: #3bdd79;
+    }
+
+    /* mouse over link */
+    a.black-background:hover {
+        color: white;
+    }
+
+    a.dropdown-item:link, a.dropdown-item:visited, a.dropdown-item:hover, a.dropdown-item:active {
+        color: black;
+        background-color: white;
+    }
+
+    /* selected link */
+    a.black-background:active {
+        color: yellow;
+    }
+</style>
+
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+    <!-- Brand -->
+    <a class="navbar-brand" href="/">
+        <font style="color: #3bdd79" onmouseover="this.style.color='white'" onmouseout="this.style.color='#3bdd79'"><b>CS
+            Classroom</b></font>
+    </a>
+
+    <!-- Links -->
+    <ul class="navbar-nav  mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="/" style="color: white" onmouseover="this.style.color='#3bdd79'"
+               onmouseout="this.style.color='white'">
+                Home
+            </a>
+        </li>
+
+        <!-- Dropdown -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown" style="color: white"
+               onmouseover="this.style.color='#3bdd79'" onmouseout="this.style.color='white'">
+                Simulation
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="/simulation/ml">Machine Learning</a>
+                <a class="dropdown-item" href="/idp">Iterative Dp</a>
+                <a class="dropdown-item" href="/simulation/la">Linear Algebra</a>
+                <a class="dropdown-item" href="/simulation/dbms/">DBMS</a>
+            </div>
+
+        </li>
+
+        <li class="nav-item">
+                 <a class="nav-link" href="/news-feed" style="color: white" onmouseover="this.style.color='#3bdd79'"
+               onmouseout="this.style.color='white'">
+                 Online Classroom </a>
+         </li>
+
+         <li class="nav-item">
+                 <a class="nav-link" href="/online_forum/forum_home" style="color: white" onmouseover="this.style.color='#3bdd79'"
+               onmouseout="this.style.color='white'">
+                 Forum </a>
+         </li>
+
+        <li class="nav-item">
+                 <a class="nav-link" href="/online_ide/" style="color: white" onmouseover="this.style.color='#3bdd79'"
+               onmouseout="this.style.color='white'">
+                 Online Ide </a>
+         </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="/code-generator/" style="color: white" onmouseover="this.style.color='#3bdd79'"
+               onmouseout="this.style.color='white'">
+                Code Generator
+            </a>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown" style="color: white"
+               onmouseover="this.style.color='#3bdd79'" onmouseout="this.style.color='white'">
+                Calculator
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="/statistics">Statistical Calculator</a>
+            </div>
+
+        </li>
+
+    </ul>
+
+
+    <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item">
+            <a class="nav-link" href="/" style="color: white" id="username_nav">
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/auth/login" style="color: white;text-decoration: underline;font-size: large;"
+               id="loginState">
+                <button type="button" class="btn btn-success" id="loginButton">Log In</button>
+            </a>
+        </li>
+    </ul>
+
+</nav>
+
+<br/><br/><br/><br/>

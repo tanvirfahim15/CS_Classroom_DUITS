@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Eigen Value Computation</title>
+
+
+    <script>
+        var data = {{ data|tojson }};
+        data = JSON.parse(data);
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+            loadData();
+            loadSavedState();
+
+        }
+
+        function loadData() {
+            document.getElementById("mat00").innerHTML=data["det_array"][0][0];
+            document.getElementById("mat01").innerHTML=data["det_array"][0][1];
+            document.getElementById("mat10").innerHTML=data["det_array"][1][0];
+            document.getElementById("mat11").innerHTML=data["det_array"][1][1];
+            var equations="";
+            for(var i=0;i<data["equations"].length;i++){
+                equations += data["equations"][i]+"<br/>"+"<br/>"
+            }
+            document.getElementById("equations").innerHTML=equations;
+        }
+
+
+        function save() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=la&algo=ev&algo_id={{name}}&username="+data_login['username']);
+        }
+
+
+        function remove() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=la&algo=ev&algo_id={{name}}&username="+data_login['username']);
+        }
+
+        function loadSavedState() {
+            var saved = {{saved}}
+                console.log(saved);
+            if (saved == 1){
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%;font-weight: bolder">
+        <br/>
+        <h2 align="center">Eigen Value Computation</h2>
+        <br/>
+         <a href="/simulation/la/eigen-value/entry">
+        <button type="button" class="btn btn-dark">Create Simulation</button>
+        </a>
+        <button type="button" class="btn btn-success" id="save" onclick="save()" style="width: 150px">Save</button>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+
+        <table>
+            <tr>
+                <td>det(</td>
+                <td>&nbsp;&nbsp;<span id="mat00"></span>&nbsp;&nbsp;&nbsp;&nbsp;<span id="mat01"></span>&nbsp;&nbsp;
+                    <br/>
+                    &nbsp;&nbsp;<span id="mat10"></span>&nbsp;&nbsp;&nbsp;&nbsp;<span id="mat11"></span>&nbsp;&nbsp;
+                </td>
+                <td>) = 0</td>
+            </tr>
+        </table>
+        <br/>
+        <div id="equations"></div>
+
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Rock Climbing DP Simulation Entry</title>
+    <script>
+
+        window.onload = function() {
+            login();
+          //  document.getElementById("footer").className += " fixed-bottom";
+        };
+
+    </script>
+    {% include "nav.html" %}
+
+
+</head>
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h2 align="center">Rock Climbing DP Entry</h2>
+        <br/>
+        <br/>
+        <div align="left" style="width: 25%">
+            <form action = "#" method = "POST">
+                <div class="form-group">
+                    <textarea class="form-control" rows="10" id="data_area" name="entry"></textarea>
+                </div>
+                <div class="form-group" align="left">
+                    <input type="submit" class="btn btn-dark btn-lg" value="Submit">
+                </div>
+            </form>
+            <h5 align="left">Sample:</h5>
+            <p align="left">
+            1 2 3 4 5<br/>
+            2 3 4 6 4<br/>
+            8 6 4 3 2<br/>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+</html>

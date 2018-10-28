@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Stat Entry</title>
+
+
+    <script>
+        var data = {{data|tojson}}
+        var n = data[1];
+        var arr = data[0];
+        var arr2 = data[2];
+        var arr3 = data[3];
+        var sum1 = data[6];
+        var sum2 = data[7];
+        var sum3 = data[8];
+        var mean = data[4];
+        var median = data[5];
+        var std_dev = data[9];
+
+        window.onload = function() {
+            login();
+            drawTable();
+        };
+
+        function drawTable() {
+            var nTable = document.getElementById("statfreqtable");
+            var ntableContent = "";
+            ntableContent += "<tr>";
+            ntableContent += "<td align='center'> X </td>";
+            ntableContent += "<td align='center'> X - Mean </td>";
+            ntableContent += "<td align='center'> (X - Mean)^2 </td>";
+            ntableContent += "</tr>";
+
+            for(var i=0; i<n; i++) {
+                ntableContent += "<tr>";
+                ntableContent += "<td align='center'>" + parseFloat(arr[i]).toFixed(0) + "</td>";
+                ntableContent += "<td align='center'>" + parseFloat(arr2[i]).toFixed(0) + "</td>";
+                ntableContent += "<td align='center'>" + parseFloat(arr3[i]).toFixed(0) + "</td>";
+                ntableContent += "</tr>";
+            }
+
+            ntableContent += "<tr>";
+            ntableContent += "<td align='center'>" + "Sum: " + parseFloat(sum1).toFixed(0) + "</td>";
+            ntableContent += "<td align='center'>" + "Sum: " + parseFloat(sum2).toFixed(0) + "</td>";
+            ntableContent += "<td align='center'>" + "Sum: " + parseFloat(sum3).toFixed(0) + "</td>";
+            ntableContent += "</tr>";
+
+            var nTable2 = document.getElementById("statfreqtable2");
+            var ntableContent2 = "";
+
+            ntableContent2 += "<tr>";
+            ntableContent2 += "<td align='center'>" + "Mean: </td><td align='center'>" + parseFloat(mean).toFixed(0) + "</td>";
+            ntableContent2 += "</tr>";
+            ntableContent2 += "<tr>";
+            ntableContent2 += "<td align='center'>" + "Median: </td><td align='center'>" + parseFloat(median).toFixed(0) + "</td>";
+            ntableContent2 += "</tr>";
+
+            ntableContent2 += "<tr>";
+            ntableContent2 += "<td align='center'>" + "Standard Deviation: </td><td align='center'>" + parseFloat(std_dev).toFixed(3) + "</td>";
+            ntableContent2 += "</tr>";
+
+            nTable.innerHTML = ntableContent;
+            nTable2.innerHTML = ntableContent2;
+        }
+
+        window.onkeydown = function (event) {
+            drawTable();
+        };
+
+    </script>
+
+    {% include 'nav.html' %}
+
+</head>
+<body>
+    <div align="center">
+        <div style="width: 80%">
+            <br/>
+
+            <a href="/calc/stat/entry">
+                 <button type="button" class="btn btn-dark btn-lg">Input Data</button>
+            </a>
+            <br/>
+            <br/>
+
+            <table class="table table-dark table-striped table-bordered" style="width: 80%;">
+                <thead class="thead-dark">
+                    <th>
+                        Data Table
+                    </th>
+                </thead>
+                <tbody id="statfreqtable" style="font-weight: bold;font-size: large">
+                </tbody>
+            </table>
+
+            <br/>
+            <br/>
+
+            <table class="table table-dark table-striped table-bordered" style="width: 80%;">
+                <tbody id="statfreqtable2" style="font-weight: bold;font-size: large">
+                </tbody>
+            </table>
+            <br/>
+            <br/>
+
+        </div>
+    </div>
+</body>
+</html>

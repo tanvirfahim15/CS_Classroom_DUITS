@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit Distance Simulation</title>
+
+    <script>
+        var data = {{data|tojson}};
+        var dp_array = data[0];
+        var string1 = data[2];
+        var string2 = data[1];
+        var cur_row = 0;
+        var cur_col = 0;
+        var rowWidth = screen.width * 8 /10;
+        rowWidth /= (string1.length + 2);
+         window.onload = function() {
+             login();
+             drawTable();
+         };
+         function drawTable() {
+             var pTable = document.getElementById("DpTableEditDistance");
+             var pTableContent = "";
+             pTableContent += "<tr>";
+             pTableContent += "<td width='"+rowWidth+"' align='center'>" + '' + "</td>";
+             for(var i = 0; i < string1.length; i++) {
+                if(i == cur_col) pTableContent += "<td width='"+rowWidth+"' align='center' style='color: yellow'>" + '' + string1[i] + "</td>";
+                else pTableContent += "<td width='"+rowWidth+"' align='center'>" + '' + string1[i] + "</td>";
+             }
+             pTableContent += "</tr>";
+            for(var i = 0; i < string2.length; i++) {
+                pTableContent += "<tr>";
+                if(i == cur_row) pTableContent += "<td width='"+rowWidth+"' align='center' style='color: yellow'>" + '' + string2[i] + "</td>";
+                else pTableContent += "<td width='"+rowWidth+"' align='center'>" + '' + string2[i] + "</td>";
+                for(var j = 0; j < string1.length; j++) {
+                    if( i < cur_row) pTableContent += "<td width='"+rowWidth+"' align='center'>" + '' + parseFloat(dp_array[i][j]).toFixed(0) + "</td>";
+                    else if(i == cur_row && j < cur_col) pTableContent += "<td width='"+rowWidth+"' align='center'>" + '' + parseFloat(dp_array[i][j]).toFixed(0) + "</td>";
+                    else if(i == cur_row && j == cur_col) pTableContent += "<td width='"+rowWidth+"' align='center' style='color: orange'>" + parseFloat(dp_array[i][j]).toFixed(0) + "</td>";
+                    else pTableContent += "<td width='"+rowWidth+"' align='center'>" + '-' + "</td>";
+                }
+                pTableContent += "</tr>";
+            }
+            pTable.innerHTML = pTableContent;
+         }
+         window.onkeydown = function (event) {
+            processKey(event);
+        };
+        function processKey(event) {
+            var key = event.keyCode;
+            if(key==39) {
+                runForward();
+            }
+            else if(key==37) {
+                runBackward();
+            }
+        }
+        function runForward() {
+            if(cur_col == string1.length && cur_row == string2.length) return;
+            cur_col++;
+            if(cur_col >= string1.length) {
+                cur_col = 0;
+                cur_row++;
+                if(cur_row >= string2.length) {
+                    cur_row = string2.length - 1;
+                    cur_col = string1.length - 1;
+                }
+            }
+            drawTable();
+        }
+        function runBackward() {
+            if(cur_col == 0 && cur_row == 0) return;
+            cur_col--;
+            if(cur_col < 0) {
+                cur_col = string1.length-1;
+                cur_row--;
+                if(cur_row < 0) {
+                    cur_row = 0;
+                    cur_col = 0;
+                }
+            }
+            drawTable();
+        }
+        function save() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Remove";
+                    document.getElementById('save').onclick = remove;
+                    document.getElementById('save').className = "btn btn-danger";
+                }
+            };
+            xhttp.open("POST", "/profile/save_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=edit_distance&algo_id={{name}}&username="+data_login['username']);
+        }
+        function remove() {
+            if(data_login['username']==null){
+                window.location.href = "/auth/login";
+                return;
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('save').innerText = "Save";
+                    document.getElementById('save').onclick = save;
+                    document.getElementById('save').className = "btn btn-success";
+                }
+            };
+            xhttp.open("POST", "/profile/remove_simulation", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhttp.send("type=idp&algo=edit_distance&algo_id={{name}}&username="+data_login['username']);
+        }
+        function loadSavedState() {
+            var saved = {{saved}}
+            console.log(saved);
+            if (saved == 1){
+                document.getElementById('save').innerText = "Remove";
+                document.getElementById('save').onclick = remove;
+                document.getElementById('save').className = "btn btn-danger";
+            }
+        }
+    </script>
+    <style>
+                .floatedTable {
+            float:left;
+        }
+        .inlineTable {
+            display: inline-block;
+        }
+    </style>
+
+    {% include "nav.html" %}
+
+</head>
+<body>
+    <div align="center">
+        <div style="width: 80%">
+
+            <h2 align="center">Edit Distance Simulation</h2>
+
+            <button type="button" class="btn btn-dark" onclick="runBackward()" style="width: 150px">Run Backward</button>
+            <button type="button" class="btn btn-dark" onclick="runForward()" style="width: 150px">Run Forward</button>
+            <button type="button" class="btn btn-success" id="save" onclick="save()" style="width: 150px">Save</button>
+            <br/><br/>
+            <a href="/idp/edit-distance/entry">
+                <button type="button" class="btn btn-dark btn-lg">Create Simulation</button>
+            </a>
+            <br/>
+            <br/>
+
+            <table class="table table-dark table-striped table-bordered" style="width: 80%">
+                <tbody id="lengthTableTop" style="font-weight: bold;">
+                </tbody>
+            </table>
+
+            <div align="left" class="table-dark" style="width: 47%; float: right;">
+
+                <br/>
+                <div style="margin-left: 30px;">
+                    <code style="color: white;font-weight: bold;">
+                        Pseudocode:<br/><br/>
+
+                        for i = 0 to length(first_string):<br/>
+                        &emsp;&emsp;  for j = 0 to lrngth(second_string):<br/>
+                            &emsp;&emsp;&emsp;&emsp;if i == 0:
+                            <br/>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                            <span id="pseudocode1"> dp_array[i][j] = j</span><br/>
+                            &emsp;&emsp;&emsp;&emsp;else if j == 0:<br/>
+
+                            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span id="pseudocode2"> dp_array[i][j] = i</span><br/>
+                            &emsp;&emsp;&emsp;&emsp;else if first_string[i - 1] == second_string[j - 1]:<br/>
+
+                            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span id="pseudocode2"> dp_array[i][j] = dp_array[i - 1][j - 1]</span><br/>
+                            &emsp;&emsp;&emsp;&emsp;else:<br/>
+
+                            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<span id="pseudocode2"> dp_array[i][j] = min(dp_array[i][j - 1], min(dp_array[i - 1][j], dp_array[i - 1][j - 1]))</span><br/>
+                            <br/>
+                    </code>
+                </div>
+
+            </div>
+
+
+            <table class="table table-dark table-striped table-bordered" style="width: 50%; float: left">
+                <thead class="thead-dark">
+                    <th>
+                        DP Table
+                    </th>
+                </thead>
+                <tbody id="DpTableEditDistance" style="font-weight: bold;font-size: large">
+                </tbody>
+            </table>
+
+            <br/>
+            <br/>
+
+
+            <br/>
+            <br/>
+
+        </div>
+    </div>
+</body>
+
+</html>

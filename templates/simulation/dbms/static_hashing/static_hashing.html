@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Static Hashing</title>
+
+
+    <script>
+
+
+        var buckets = -1;
+        var items = [];
+
+        window.onload=function () {
+            login();
+            document.getElementById("footer").className += " fixed-bottom";
+        }
+        function initBuckets() {
+            for (var i=0;i<buckets;i++) {
+                items.push([]);
+            }
+        }
+        function drawBuckets() {
+            var doc = document.getElementById('simulation');
+            doc.innerHTML = "<b>Hash Function : </b>(Entry) mod (Number of buckets)<br/><br/>";
+            for (var i=0;i<buckets;i++){
+                var tb = "";
+                tb += "<table><tr><td width=\"120\">Bucket" + i + ":</td>";
+                for (var j=0;j<items[i].length;j++){
+                    tb += "<td width=\"50\">"+items[i][j]+"</td>";
+                }
+
+                tb += "</tr></table><br/>";
+                doc.innerHTML += tb;
+            }
+
+
+        }
+
+        function append() {
+            var number = document.getElementById('number').value;
+            number = parseInt(number);
+            if(buckets==-1){
+                buckets=number;
+                document.getElementById('entry').innerText = "Enter Number";
+                initBuckets();
+                drawBuckets();
+                return;
+            }
+            var bucket = number % buckets;
+            document.getElementById('msg').innerText = number.toString() +" % "+ buckets.toString() + " = "+bucket.toString();
+            items[bucket].push(number);
+            drawBuckets();
+        }
+
+    </script>
+
+
+    {% include "nav.html" %}
+
+
+</head>
+
+<body>
+<div align="center">
+    <div style="width: 80%">
+        <h2>Static Hashing Simulation</h2>
+        <br/>
+        <br/>
+        <div id="simulation" align="left">
+
+        </div>
+        <div id="input">
+            <div id="msg"></div><br/>
+            <input type="number" id="number" min="0" max="5000">
+            <br/>
+            <br/>
+            <button onclick="append()" class="btn btn-dark" id="entry">Enter Number of buckets</button>
+        </div>
+        <br/>
+        <br/><br/>
+        <br/>
+    </div>
+</div>
+</body>
+<footer> {% include "footer.html" %}</footer>
+
+</html>
