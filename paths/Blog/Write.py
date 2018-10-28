@@ -68,7 +68,7 @@ def add_article():
         article_id = read.blog_artcile_insert(articles)
         article_id = str(article_id)
         flash('Article Created', 'success')
-        Writer.Writer(session['username']).notify_observer(article_id)
+        #Writer.Writer(session['username']).notify_observer(article_id)
         return redirect('/article/'+article_id+'/')
 
     return render_template('/tutorial/add_article.html', form=form)
