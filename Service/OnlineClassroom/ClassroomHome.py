@@ -19,6 +19,12 @@ def create_class_info_update(data):
     return
 
 
+def space_check(s):
+    for i in range(0 , 24):
+        if s[i]==' ':
+            return -1
+    return 1
+
 def join_class_info_update(data):
     user = db.course_users.find_one({'username': session['username']})
     if user==None:
@@ -34,6 +40,9 @@ def join_class_info_update(data):
 
     course_id = str(data['course_id'])
     if len(course_id) != 24:
+        return -1
+    got_ret = space_check(str(course_id))
+    if(got_ret==-1):
         return -1
     course = db.courses.find_one({'_id': ObjectId(course_id)})
     if course == None:

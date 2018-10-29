@@ -23,6 +23,7 @@ def show_join_classes():
     return render_template('OnlineClassroom/classroom_with_courses/join_classes.html' ,**locals())
 
 
+
 @app.route('/classroom-courses-join/entry-data', methods=['POST', 'GET'])
 def show_join_classes_entry_data():
     if request.method=='POST':
