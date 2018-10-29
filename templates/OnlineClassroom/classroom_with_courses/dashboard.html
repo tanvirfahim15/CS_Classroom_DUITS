@@ -1,0 +1,15 @@
+{% extends 'OnlineClassroom/classroom_with_courses/course_dashboard_layout.html' %}
+
+{% block body %}
+    <br/>
+    <div class="jumbotron text-center">
+        <h1>Online Classroom</h1>
+        <p class="lead">Transform your classroom with 'Online Classroom' <br>
+'Online Classroom' streamlines assignments, boosts collaboration, and fosters seamless communication to make teaching more productive and meaningful.</p>
+        {% if session['username'] != NULL %}
+        <a class="btn btn-success" href="/classroom-courses-enrolled">Enrolled Classes</a>
+        {% endif %}
+        <a class="btn btn-success" href="/classroom-courses-join">Join Class</a>
+        <a class="btn btn-success" href="/classroom-courses-create">Create Class</a>
+    </div>
+{% endblock %}

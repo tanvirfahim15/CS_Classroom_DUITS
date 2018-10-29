@@ -8,3 +8,5 @@ class addclasspostAdapter(post):
         return ""
     def getauthor(self):
         return self.addclass.author
+    def get_course_id(self):
+        return self.addclass.course_id

@@ -1,0 +1,15 @@
+{% extends 'OnlineClassroom/classroom_with_courses/course_dashboard_layout.html' %}
+
+{% block body %}
+    <br/>
+    <div class="jumbotron text-center">
+        <h1>Online Classroom</h1>
+        <p class="lead">Transform your classroom with 'Online Classroom' <br>
+'Online Classroom' streamlines assignments, boosts collaboration, and fosters seamless communication to make teaching more productive and meaningful.</p>
+        <form action="/classroom-courses-join/entry-data" method="post">
+            Class Code:
+            <input type="text" name="course_id" placeholder="Write here..">
+            <input type="submit" class="btn btn-success" value="Enroll">
+        </form>
+    </div>
+{% endblock %}

@@ -11,18 +11,19 @@
         </div>
 
         <div class="card-body">
-            <div class="h5">CSE-3217</div>
+            <div class="h5">{{ course_info['course_code'] }}</div>
 {#            <div class="h7 text-muted">Fullname : Kashob Roy</div>#}
-            <div class="h7"> Software Design Pattern Lab </div>
+            <div class="h7"> {{ course_info['course_name'] }} </div>
+            <div class="h7"> Classroom Join Code: {{ course_info['_id'] }} </div>
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
                 <div class="h6 text-muted">Instructors</div>
-                <div class="h5">5</div>
+                <div class="h5">1</div>
             </li>
             <li class="list-group-item">
                 <div class="h6 text-muted">Classmates</div>
-                <div class="h5">69</div>
+                <div class="h5">{{ classmate_count }}</div>
             </li>
         </ul>
     </div>

@@ -1,0 +1,19 @@
+{% extends 'OnlineClassroom/classroom_with_courses/course_dashboard_layout.html' %}
+
+{% block body %}
+    <br/>
+    <div class="jumbotron text-center">
+        <h1>Online Classroom</h1>
+        <p class="lead">Transform your classroom with 'Online Classroom' <br>
+'Online Classroom' streamlines assignments, boosts collaboration, and fosters seamless communication to make teaching more productive and meaningful.</p>
+        <form action="/classroom-courses-create/entry-data", method="post">
+            Course Name:
+            <input type="text" name="course_name" placeholder="Ex. Algorithm">
+            <br>
+            Course Code:
+            <input type="text" name="course_code" placeholder="Ex. CSE-3103">
+            <br>
+            <input type="submit" class="btn btn-success" value="Submit">
+        </form>
+    </div>
+{% endblock %}

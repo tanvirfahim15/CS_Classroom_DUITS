@@ -1,0 +1,21 @@
+{% include 'OnlineClassroom/classroom_with_courses/course_dashboard_layout.html' %}
+{% block body %}
+    <div class="row">
+        {% for course in courses %}
+        <div class="column">
+            <div class="card">
+{#                <div class="index-card" >#}
+                    <h3>{{ course['course_code'] }}</h3>
+                    <p class="class_name">Course Name: {{ course['course_name'] }}</p>
+                    <p> Total Enrolled: {{ course['count'] }}</p>
+    {#                <p><button class="btn btn-success">Join Us</button></p>#}
+                    <p><a href="{{ url_for('classroom_feed.show_news_feed',course_id = course["_id"]) }}" class="btn btn-success" method='POST'>Join Us</a></p>
+
+    {#                <a href="{{ url_for('classroom_feed.show_news_feed',course_id = course["_id"]) }}" class="card-link" method='POST'><i class="fa fa-comment"></i> Comment</a>#}
+{#                </div>#}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

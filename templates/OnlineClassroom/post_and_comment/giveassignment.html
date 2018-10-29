@@ -33,7 +33,7 @@ form {
 <script type=text/javascript>
   $(function() {
     $('#button').bind('click', function() {
-      $.getJSON('/add_assignment', {
+      $.getJSON('/add_assignment/{{ course_id }}', {
         time: String(document.getElementById("appt-time").value),
         date: String(document.getElementById("start").value),
           details:String(document.getElementById("details").value)
@@ -47,7 +47,7 @@ form {
 {% extends '/tutorial/layout.html' %}
 
 {% block body %}
-    <a class="btn btn-success" href="{{ url_for('classroom_feed.show_news_feed') }}">back</a>
+    <a class="btn btn-success" href="{{ url_for('classroom_feed.show_news_feed',course_id=course_id) }}">back</a>
     <br/>
     <div class="jumbotron text-center">
         <h3>Assignment Details</h3>
